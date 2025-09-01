@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { RequestHandler } from 'express';
+import { Request, RequestHandler } from 'express';
 import catchAsync from '../../utills/catchAsync';
 import { UserServices } from './user.service';
 import sendResponse from '../../utills/sendResponse';
@@ -8,156 +9,163 @@ import config from '../../../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import AppError from '../../ErrorHandler/AppError';
 import { tokenDecoded } from '../../utills/tokenDecoded';
+import { TUser } from './user.interface';
 
-// *************user*********
-// createStudent;
-const createStudent: RequestHandler = catchAsync(async (req, res, next) => {
-  const result = await UserServices.createUserIntoDB(req.body);
+// *************USER CONTROLLERS*********
+
+// Create User
+const createUser: RequestHandler = catchAsync(async (req, res, next) => {
+  // Handle file upload if present
+  const userData = req.body;
+
+  if (req.file) {
+    userData.img = req.file.filename; // Store the uploaded file name
+  }
+
+  // const result = await UserServices.createUserIntoDB(userData);
+  const { email } = req.body;
+  const isUser = await UserServices.getUserByEmail(email);
+  let code;
+
+  if (isUser) {
+    if (isUser.isDeleted) {
+      throw new AppError(httpStatus.FORBIDDEN, 'User is deleted');
+    } else if (!isUser.isEmailVerified) {
+      await UserServices.isUpdateUser(isUser.id, { ...req.body });
+    }
+  } else {
+    code = await UserServices.createUser(req.body);
+  }
+
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     message: 'User registered successfully',
     success: true,
-    data: result,
+    data: {},
   });
 });
 
-// LoginUser;
+// Login User
 const LoginUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const data = await UserServices.loginUser(req.body);
+  // Handle profile image update during login if provided
+  const loginData = req.body;
 
-  if (data) {
-    const token = jwt.sign({ data }, config.accessTokenSecret as string, {
-      expiresIn: '1y',
-    });
+  const data = await UserServices.loginUser(loginData);
 
-    res.cookie('authToken', token, {
-      httpOnly: true, // Accessible only by the web server
-      secure: config.node === 'production', // Send only over HTTPS in production
-      maxAge: 30 * 24 * 3600 * 1000,
-    });
-
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User logged in successfully',
-      data: data,
-      token: token,
-    });
-  } else {
-    sendResponse(res, {
+  if (!data) {
+    return sendResponse(res, {
       statusCode: httpStatus.NOT_FOUND,
       success: false,
-      message: 'User not found',
-      data: [],
+      message: 'Invalid credentials',
+      data: null,
     });
   }
-});
 
-// Find Single User;
-const FindSingleUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const data = await UserServices.findSingleUser(req.params.id);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User retrieved in successfully',
-    data: data,
-  });
-});
-// updateUserProfileDB;
-const UpdateUserProfile: RequestHandler = catchAsync(async (req, res, next) => {
-  const token = req?.headers.authorization?.split(' ')[1];
-
-  if (!token) {
-    return next(new AppError(httpStatus.UNAUTHORIZED, 'No token provided'));
-  }
-
-  const decoded = jwt.verify(
-    token,
+  // Generate JWT token
+  const token = jwt.sign(
+    { data },
     config.accessTokenSecret as string,
-  ) as JwtPayload & { data: { _id: string } };
-  const data = await UserServices.updateUserProfileDB(
-    decoded.data._id,
-    req.body,
+    { expiresIn: '7d' }, // Reduced from 1 year for security
   );
+
+  // Set secure cookie
+  res.cookie('authToken', token, {
+    httpOnly: true,
+    secure: config.node === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Profile Update in successfully',
+    message: 'User logged in successfully',
     data: data,
+    token: token,
   });
 });
-// followingUser;
-const FollowingUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const token = req?.headers.authorization?.split(' ')[1];
 
-  if (!token) {
-    return next(new AppError(httpStatus.UNAUTHORIZED, 'No token provided'));
+// Find Single User
+const FindSingleUser: RequestHandler = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User ID is required');
   }
 
-  const decoded = tokenDecoded(token);
+  const data = await UserServices.getUserById(id);
 
-  const data = await UserServices.followingUser(
-    decoded.data._id,
-    req.body.followedId,
-  );
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'follow successfully',
-    data: data,
-  });
-});
-
-// followingUser;
-const UnFollowingUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const token = req?.headers.authorization?.split(' ')[1];
-
-  if (!token) {
-    return next(new AppError(httpStatus.UNAUTHORIZED, 'No token provided'));
+  if (!data) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
 
-  const decoded = tokenDecoded(token);
-
-  const data = await UserServices.unFollowingUser(
-    decoded.data._id,
-    req.body.followedId,
-  );
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'un Follow successfully',
+    message: 'User retrieved successfully',
     data: data,
   });
 });
 
-//**********admin*********
+// Update User Profile
+const UpdateUserProfile: RequestHandler = catchAsync(async (req, res, next) => {
+  const { user }: any = req;
+  const { _id } = user;
+  const updateData = req.body;
 
-// FindAllUser;
+  // Handle file upload if present
+  if (req.file) {
+    updateData.img = req.file.filename;
+  }
+
+  const data = await UserServices.updateUserProfileDB(_id, updateData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Profile updated successfully',
+    data: data,
+  });
+});
+
+// **********ADMIN CONTROLLERS*********
+
+// Find All Users
 const FindAllUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const data = await UserServices.findAllUsersFromDB();
+  // Add pagination support
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
+  const search = req.query.search as string;
+
+  const data = await UserServices.findAllUsersFromDB(page, limit, search);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'get all users successfully',
+    message: 'Users retrieved successfully',
     data: data,
   });
 });
 
-// ChangeUserRole;
+// Change User Role
 const ChangeUserRole: RequestHandler = catchAsync(async (req, res, next) => {
   const token = req.headers.authorization;
+
   if (!token) {
-    return next(new AppError(httpStatus.UNAUTHORIZED, 'No token provided'));
+    throw new AppError(httpStatus.UNAUTHORIZED, 'No token provided');
   }
 
   const decoded = tokenDecoded(token);
-
   const { userId, role } = req.body;
+
+  if (!userId || !role) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User ID and role are required');
+  }
+
+  if (!['user', 'admin'].includes(role)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid role specified');
+  }
+
   const data = await UserServices.changeUserRoleDB(
     userId,
     role,
@@ -167,86 +175,109 @@ const ChangeUserRole: RequestHandler = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User role update successfully',
-    data: data,
-  });
-});
-// BlockedUser;
-const BlockedUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const { userId } = req.body;
-  const data = await UserServices.blockedUserDB(userId);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User blocked successfully',
-    data: data,
-  });
-});
-// UnBlockedUser;
-const UnBlockedUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const { userId } = req.body;
-  const data = await UserServices.unBlockedUserDB(userId);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User unblocked successfully',
+    message: 'User role updated successfully',
     data: data,
   });
 });
 
-// DeleteUserRole;
+// Delete User (Soft Delete)
 const DeleteUserRole: RequestHandler = catchAsync(async (req, res, next) => {
   const token = req.headers.authorization;
+
   if (!token) {
-    return next(new AppError(httpStatus.UNAUTHORIZED, 'No token provided'));
+    throw new AppError(httpStatus.UNAUTHORIZED, 'No token provided');
   }
 
   const decoded = tokenDecoded(token);
-
   const { userId } = req.body;
+
+  if (!userId) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User ID is required');
+  }
+
+  if (decoded.data._id === userId) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Cannot delete your own account',
+    );
+  }
+
   const data = await UserServices.deleteUserDB(userId, decoded.data._id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User delete successfully',
+    message: 'User deleted successfully',
     data: data,
   });
 });
 
-// RestoreUserRole;
+// Restore User
 const RestoreUserRole: RequestHandler = catchAsync(async (req, res, next) => {
   const token = req.headers.authorization;
+
   if (!token) {
-    return next(new AppError(httpStatus.UNAUTHORIZED, 'No token provided'));
+    throw new AppError(httpStatus.UNAUTHORIZED, 'No token provided');
   }
 
   const decoded = tokenDecoded(token);
-
   const { userId } = req.body;
+
+  if (!userId) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User ID is required');
+  }
+
   const data = await UserServices.restoreUserDB(userId, decoded.data._id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User restore successfully',
+    message: 'User restored successfully',
     data: data,
   });
 });
 
+// Logout User
+const LogoutUser: RequestHandler = catchAsync(async (req, res, next) => {
+  res.clearCookie('authToken');
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User logged out successfully',
+    data: null,
+  });
+});
+
+// Get Current User Profile
+const GetCurrentUser: RequestHandler = catchAsync(
+  async (req: Request, res, next) => {
+    const { user }: any = req;
+    const { _id } = user;
+
+    const data = await UserServices.findSingleUser(_id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Current user profile retrieved successfully',
+      data: data,
+    });
+  },
+);
+
 export const UserController = {
-  createStudent,
+  // User operations
+  createUser,
   LoginUser,
+  LogoutUser,
   FindSingleUser,
+  GetCurrentUser,
   UpdateUserProfile,
-  FollowingUser,
-  UnFollowingUser,
+
+  // Admin operations
+  FindAllUser,
   ChangeUserRole,
-  BlockedUser,
-  UnBlockedUser,
   DeleteUserRole,
   RestoreUserRole,
-  FindAllUser,
 };

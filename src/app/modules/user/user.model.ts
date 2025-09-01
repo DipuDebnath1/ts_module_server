@@ -1,25 +1,38 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
-import { TUser } from './user.interface';
-// import config from "../../config";
+// import bcrypt from 'bcryptjs';
 import bcrypt from 'bcrypt';
-import config from '../../../config';
+import { TUser } from './user.interface';
 
-// password123 =  $2b$10$qx9jGbAFw4CUK4HoUn/MKehg2wYevxbQHWZ.MYsRulThLotnpbt.C
+// Simple User Schema
 const userSchema = new Schema<TUser>(
   {
     name: {
       type: String,
+      required: true,
     },
     email: {
       type: String,
+      required: true,
       unique: true,
     },
-    password: {
-      type: String,
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
     },
     phone: {
       type: String,
+      required: true,
+      unique: true,
+    },
+    isPhoneVerified: {
+      type: Boolean,
+      default: false,
+    },
+    password: {
+      type: String,
+      required: true,
+      private: true,
     },
     img: {
       type: String,
@@ -29,34 +42,9 @@ const userSchema = new Schema<TUser>(
       enum: ['user', 'admin'],
       default: 'user',
     },
-    isPremium: {
-      type: Boolean,
-      default: false,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    isBlocked: {
-      type: Boolean,
-      default: false,
-    },
     isDeleted: {
       type: Boolean,
       default: false,
-    },
-    address: {
-      type: String,
-    },
-    totalFollower: {
-      type: [Schema.Types.ObjectId],
-      default: [],
-      ref: 'user',
-    },
-    totalFollowing: {
-      type: [Schema.Types.ObjectId],
-      default: [],
-      ref: 'user',
     },
   },
   {
@@ -64,30 +52,40 @@ const userSchema = new Schema<TUser>(
   },
 );
 
-userSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const userData = this;
-  userData.password = await bcrypt.hash(
-    userData.password,
-    Number(config.saltRounds),
-  );
-  next();
-});
-//
-// userSchema.pre('save', async function (next) {
-//   // Only hash the password if it has been modified (i.e., not during every save operation)
-//   if (this.isModified('password')) {
-//     this.password = await bcrypt.hash(this.password, Number(config.saltRounds));
-//   }
-//   next();
+// // Hide password in JSON responses
+// userSchema.set('toJSON', {
+//   transform: function (doc, ret) {
+//     delete ret.password;
+//     return ret;
+//   },
 // });
 
-userSchema.set('toJSON', {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  transform: function (doc, ret, options) {
-    ret.password = undefined;
-    return ret;
-  },
+userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+  const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
+  return !!user;
+};
+
+userSchema.statics.isPhoneNumberTaken = async function (
+  phoneNumber,
+  excludeUserId,
+) {
+  const user = await this.findOne({ phoneNumber, _id: { $ne: excludeUserId } });
+  return !!user;
+};
+
+// Instance method to check password match
+userSchema.methods.isPasswordMatch = async function (password: string) {
+  const user = this;
+  return bcrypt.compare(password, user.password);
+};
+
+// Pre-save hook to hash the password
+userSchema.pre('save', async function (next) {
+  const user = this;
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+  next();
 });
 
-export const User = model<TUser>('user', userSchema);
+export const User = model<TUser>('User', userSchema);

@@ -1,338 +1,278 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-console */
 import httpStatus from 'http-status';
 import AppError from '../../ErrorHandler/AppError';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import bcrypt from 'bcrypt';
+import config from '../../../config';
 
-// ********user*********
+// **********USER SERVICES**********
 
-// sign up User
-const createUserIntoDB = async (payload: TUser) => {
-  try {
-    const result = await User.create(payload);
-    return result;
-  } catch (err: any) {
-    console.log('Error user signup failed', err);
+// Create User in Database
+const createUser = async (userData: TUser): Promise<TUser> => {
+  // Check if user already exists
+  const existingUser = await User.findOne({ email: userData.email });
+
+  if (existingUser) {
     throw new AppError(
       httpStatus.CONFLICT,
-      err.message || 'user account create failed',
+      'User already exists with this email',
     );
   }
+
+  return await User.create(userData);
 };
-// login user
-const loginUser = async (payload: Partial<TUser>) => {
-  const { password, email } = payload;
 
-  try {
-    const user = await User.findOne({ email });
+// Login User
+const loginUser = async (loginData: { email: string; password: string }) => {
+  const { email, password } = loginData;
 
-    if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'user not found');
-    }
+  // Find user by email
+  const user = await getUserByEmail(email);
 
-    // Compare the password
-    const isMatch = await bcrypt.compare(password as string, user.password);
+  if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
+  if (!user.isDeleted)
+    throw new AppError(httpStatus.BAD_REQUEST, 'User account is deleted !');
+  if (!user.isEmailVerified)
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Email is not verified !');
+  if (!user.isPasswordMatch(password))
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Password is incorrect !');
 
-    if (isMatch) {
-      // check user.isDeleted
-      if (user.isDeleted) {
-        throw new AppError(
-          httpStatus.BAD_REQUEST,
-          'sorry you already deleted!',
-        );
-      }
+  return userResponse;
+};
 
-      // check user.isBlocked
+// Find Single User
+const getUserById = async (id: string) => {
+  const user = await User.findOne({
+    _id: id,
+    isDeleted: false,
+  })
+    .populate('totalFollower', 'name email img')
+    .populate('totalFollowing', 'name email img');
 
-      if (user.isBlocked) {
-        throw new AppError(
-          httpStatus.BAD_REQUEST,
-          'sorry you already blocked!',
-        );
-      }
-
-      // all ok sent user
-      return user;
-    } else {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'Password does not match');
-    }
-  } catch (err) {
-    console.log('Error comparing passwords:', err);
-    throw err;
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
+
+  return user;
 };
 
-// find single user
-const findSingleUser = async (id: string) => {
-  try {
-    const data = await User.findById(id)
-      // .populate('totalFollower', 'name email img')
-      // .populate('totalFollowing', 'name email img');
-      .populate('totalFollower')
-      .populate('totalFollowing');
+const getUserByEmail = async (email: string) => {
+  return await User.findOne({ email });
+};
 
-    return data;
-  } catch (err) {
-    console.log('Error comparing passwords:', err);
-    throw err;
+const isUpdateUser = async (userId: string, updateBody: Partial<TUser>) => {
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
-};
-// updateUserProfileDB;
-const updateUserProfileDB = async (userId: string, payload: Partial<TUser>) => {
-  try {
-    // console.log(userId, payload);
-    const result = User.findByIdAndUpdate(userId, payload, { new: true });
-    return result;
-  } catch (err: any) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      err.message || 'user account update failed',
-    );
+
+  const oneTimeCode =
+    Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+
+  if (updateBody.role === 'user' || updateBody.role === 'admin') {
+    sendEmailVerification(updateBody.email, oneTimeCode);
   }
+
+  Object.assign(user, updateBody, {
+    isDeleted: false,
+    isSuspended: false,
+    isEmailVerified: false,
+    isResetPassword: false,
+    isPhoneNumberVerified: false,
+    oneTimeCode: oneTimeCode,
+  });
+  await user.save();
+  return user;
 };
 
-// follow user
-const followingUser = async (userId: string, followedId: string) => {
-  try {
-    const user = await User.findById(userId);
-    const followedUser = await User.findById(followedId);
+// Update User Profile
+const updateUserProfileDB = async (
+  userId: string,
+  updateData: Partial<TUser>,
+) => {
+  // Remove sensitive fields that shouldn't be updated directly
+  const { password, role, isDeleted, ...safeUpdateData } = updateData;
 
-    if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-    }
+  // Handle password update separately if provided
 
-    if (!followedUser) {
-      throw new AppError(httpStatus.NOT_FOUND, 'Followed user not found');
-    }
+  const updatedUser = await User.findByIdAndUpdate(userId, safeUpdateData, {
+    new: true,
+    runValidators: true,
+  })
+    .populate('totalFollower', 'name email img')
+    .populate('totalFollowing', 'name email img');
 
-    // Check if the user
-    const isFollowing = user.totalFollowing.includes(followedId as any);
-    const isFollowed = followedUser.totalFollower.includes(userId as any);
-
-    if (!isFollowing || !isFollowed) {
-      // add IDs to the arrays
-      const res = await User.findByIdAndUpdate(
-        userId,
-        {
-          $addToSet: { totalFollowing: followedId },
-        },
-        { new: true },
-      );
-      await User.findByIdAndUpdate(followedId, {
-        $addToSet: { totalFollower: userId },
-      });
-      return res;
-    }
-  } catch (err: any) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      err.message || 'Following failed !!',
-    );
+  if (!updatedUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
+
+  return updatedUser;
 };
 
-// un follow user
-const unFollowingUser = async (userId: string, followedId: string) => {
-  try {
-    // Remove userId from the followed user's followers list
-    const followedUser = await User.findByIdAndUpdate(
-      userId,
-      { $pull: { totalFollowing: followedId } },
-      { new: true },
-    );
+// **********ADMIN SERVICES**********
 
-    if (!followedUser) {
-      throw new AppError(httpStatus.NOT_FOUND, 'Followed user not found');
-    }
+// Find All Users with Pagination and Search
+const findAllUsersFromDB = async (
+  page: number = 1,
+  limit: number = 10,
+  search?: string,
+) => {
+  const skip = (page - 1) * limit;
 
-    // Remove followedId from the user's following list
-    const user = await User.findByIdAndUpdate(
-      followedId,
-      { $pull: { totalFollower: userId } },
-      { new: true },
-    );
+  // Build search query
+  const searchQuery: any = {};
 
-    if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-    }
-
-    return user;
-  } catch (err: any) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      err.message || 'Following failed !!',
-    );
+  if (search) {
+    searchQuery.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { email: { $regex: search, $options: 'i' } },
+      { phone: { $regex: search, $options: 'i' } },
+    ];
   }
+
+  // Get total count for pagination
+  const totalUsers = await User.countDocuments(searchQuery);
+
+  // Get users with pagination
+  const users = await User.find(searchQuery)
+    .select('-password')
+    .populate('totalFollower', 'name email img')
+    .populate('totalFollowing', 'name email img')
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  return {
+    users,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / limit),
+      totalUsers,
+      hasNextPage: page < Math.ceil(totalUsers / limit),
+      hasPreviousPage: page > 1,
+    },
+  };
 };
 
-// ********admin******
-
-// change user role
+// Change User Role
 const changeUserRoleDB = async (
   userId: string,
-  role: string,
+  newRole: string,
   adminId: string,
 ) => {
+  // Check if target user exists
+  const targetUser = await User.findOne({ _id: userId, isDeleted: false });
+
+  if (!targetUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  // Prevent admin from changing their own role
   if (userId === adminId) {
-    throw new AppError(httpStatus.BAD_REQUEST, "you can't change your role !");
+    throw new AppError(httpStatus.BAD_REQUEST, 'Cannot change your own role');
   }
-  try {
-    if (role !== 'admin' && role !== 'user') {
-      throw new AppError(httpStatus.BAD_REQUEST, 'enter valid user role !');
-    }
 
-    const user = await User.findById(userId);
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { role: newRole },
+    { new: true, runValidators: true },
+  ).select('-password');
 
-    if (!user) {
-      throw new AppError(httpStatus.BAD_REQUEST, "user Can't found !");
-    }
-    if (user.role === role) {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        `user already have role : ${role}`,
-      );
-    }
-
-    if (user.role !== role) {
-      user.role = role;
-      await user.save();
-      return user;
-    }
-  } catch (error: any) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      error.message || 'user blocked failed',
-    );
-  }
-};
-// blocked user
-const blockedUserDB = async (userId: string) => {
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new AppError(httpStatus.BAD_REQUEST, "user Can't found !");
-    }
-    if (user.isBlocked) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'user already have blocked');
-    }
-    user.isBlocked = true;
-    await user.save();
-
-    return user;
-  } catch (error: any) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      error.message || 'user blocked failed',
-    );
-  }
-};
-//un blocked user
-const unBlockedUserDB = async (userId: string) => {
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new AppError(httpStatus.BAD_REQUEST, "user Can't found !");
-    }
-    if (!user?.isBlocked) {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        'user already have been Unblocked',
-      );
-    }
-    user.isBlocked = false;
-    await user.save();
-
-    return user;
-  } catch (error: any) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      error.message || 'user blocked failed',
-    );
-  }
+  return updatedUser;
 };
 
-// delete user
+// Soft Delete User
 const deleteUserDB = async (userId: string, adminId: string) => {
-  try {
-    if (userId === adminId) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'you can not deleted you');
-    }
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new AppError(httpStatus.BAD_REQUEST, "user Can't found !");
-    }
-    if (user.isDeleted) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'user already have deleted');
-    }
+  const user = await User.findOne({ _id: userId, isDeleted: false });
 
-    user.isDeleted = true;
-    await user.save();
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
 
-    return user;
-  } catch (error: any) {
+  // Prevent admin from deleting themselves
+  if (userId === adminId) {
     throw new AppError(
-      httpStatus.CONFLICT,
-      error.message || 'user delete failed',
+      httpStatus.BAD_REQUEST,
+      'Cannot delete your own account',
     );
   }
+
+  if (user.isDeleted) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User is already deleted');
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { isDeleted: true },
+    { new: true },
+  ).select('-password');
+
+  return updatedUser;
 };
 
-// restore user
+// Restore User
 const restoreUserDB = async (userId: string, adminId: string) => {
-  try {
-    if (userId === adminId) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'you can not restore you');
-    }
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new AppError(httpStatus.BAD_REQUEST, "user Can't found !");
-    }
-    if (!user.isDeleted) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'user not found delete list');
-    }
+  const user = await User.findById(userId);
 
-    user.isDeleted = false;
-    await user.save();
-
-    return user;
-  } catch (error: any) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      error.message || 'user restore failed',
-    );
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
+
+  if (!user.isDeleted) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User is not deleted');
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { isDeleted: false },
+    { new: true },
+  );
+
+  return updatedUser;
 };
 
-// get all user
-const findAllUsersFromDB = async () => {
-  try {
-    const users = await User.find({}, '-password'); // Exclude password field
-    if (!users.length) {
-      throw new AppError(httpStatus.NOT_FOUND, 'No users found');
-    }
+// Get User Statistics (Bonus admin feature)
+const getUserStatistics = async () => {
+  const totalUsers = await User.countDocuments({ isDeleted: false });
+  const activeUsers = await User.countDocuments({
+    isDeleted: false,
+    isBlocked: false,
+  });
+  const blockedUsers = await User.countDocuments({ isBlocked: true });
+  const deletedUsers = await User.countDocuments({ isDeleted: true });
+  const premiumUsers = await User.countDocuments({
+    isPremium: true,
+    isDeleted: false,
+  });
+  const adminUsers = await User.countDocuments({
+    role: 'admin',
+    isDeleted: false,
+  });
 
-    return users;
-  } catch (error: any) {
-    new AppError(
-      httpStatus.INTERNAL_SERVER_ERROR,
-      error.message || 'Failed to fetch users',
-    );
-  }
+  return {
+    totalUsers,
+    activeUsers,
+    blockedUsers,
+    deletedUsers,
+    premiumUsers,
+    adminUsers,
+  };
 };
 
 export const UserServices = {
-  createUserIntoDB,
+  // User services
+  createUser,
   loginUser,
-  findSingleUser,
+  getUserByEmail,
+  isUpdateUser,
+  getUserById,
   updateUserProfileDB,
+  // Admin services
+  findAllUsersFromDB,
   changeUserRoleDB,
-  blockedUserDB,
-  unBlockedUserDB,
   deleteUserDB,
   restoreUserDB,
-  followingUser,
-  unFollowingUser,
-  findAllUsersFromDB,
+  getUserStatistics,
 };
