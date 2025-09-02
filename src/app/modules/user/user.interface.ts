@@ -1,3 +1,5 @@
+export type TRoles = ['user', 'admin', 'superAdmin'];
+
 export type TUser = {
   name: string;
   email: string;
@@ -5,7 +7,10 @@ export type TUser = {
   phone: string;
   isPhoneVerified: boolean;
   password: string;
-  img?: string;
-  role: 'user' | 'admin';
+  image?: string;
+  role: 'user' | 'admin' | 'superAdmin';
+  isPasswordMatch(password: string): Promise<boolean>;
+  oneTimeCode: string | null;
   isDeleted: boolean;
+  isResetPassword: boolean;
 };

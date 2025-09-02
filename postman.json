@@ -1,0 +1,234 @@
+{
+  "info": {
+    "name": "API v1",
+    "description": "Postman collection for API v1 routes",
+    "_postman_id": "12345678-1234-5678-1234-567812345678",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication Routes",
+      "item": [
+        {
+          "name": "User Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/signup",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "signup"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/path/to/image.jpg"
+                },
+                {
+                  "key": "username",
+                  "value": "user123"
+                },
+                {
+                  "key": "email",
+                  "value": "user123@example.com"
+                },
+                {
+                  "key": "password",
+                  "value": "securepassword123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "User Signin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/signin",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "signin"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/path/to/image.jpg"
+                },
+                {
+                  "key": "email",
+                  "value": "user123@example.com"
+                },
+                {
+                  "key": "password",
+                  "value": "securepassword123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "OTP Verification",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/verify_otp",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "verify_otp"]
+            },
+            "body": {
+              "mode": "json",
+              "json": {
+                "otp": "123456",
+                "email": "user123@example.com"
+              }
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/forgot_password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "forgot_password"]
+            },
+            "body": {
+              "mode": "json",
+              "json": {
+                "email": "user123@example.com"
+              }
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/reset_password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "reset_password"]
+            },
+            "body": {
+              "mode": "json",
+              "json": {
+                "token": "reset-token",
+                "new_password": "newpassword123"
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/update_password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "update_password"]
+            },
+            "body": {
+              "mode": "json",
+              "json": {
+                "old_password": "oldpassword123",
+                "new_password": "newpassword123"
+              }
+            }
+          }
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            },
+            "body": {
+              "mode": "json",
+              "json": {
+                "refresh_token": "refresh-token"
+              }
+            }
+          }
+        },
+        {
+          "name": "Refresh User Token",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/refresh_token",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "refresh_token"]
+            },
+            "body": {
+              "mode": "json",
+              "json": {
+                "refresh_token": "refresh-token"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Routes",
+      "item": [
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/user/update-profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "user", "update-profile"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/path/to/profile-image.jpg"
+                },
+                {
+                  "key": "name",
+                  "value": "Updated Name"
+                },
+                {
+                  "key": "email",
+                  "value": "updated@example.com"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

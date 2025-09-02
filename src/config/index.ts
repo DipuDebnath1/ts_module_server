@@ -2,15 +2,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default {
-  name: process.env.NAME || 'your-app-name',
+  appName: process.env.APP_NAME || 'your-app-name',
   node: process.env.NODE_ENV || 'development',
   serverPort: Number(process.env.PORT) || 8000,
   socketPort: Number(process.env.SOCKET_PORT) || 8001,
   ipAddress: process.env.IP_ADDRESS || '127.0.0.1',
   databaseUri: process.env.DATABASE_URI || '',
-  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || '',
-  refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || '',
+
   saltRounds: process.env.SALT_ROUNDS || '10',
+
+  // Email settings
   email: {
     smtp: {
       host: process.env.SMTP_HOST,
@@ -22,9 +23,33 @@ export default {
     },
     from: process.env.SMTP_MAIL,
   },
+
+  // AWS S3 settings
   aws: {
     bucketRegion: process.env.AWS_BUCKET_REGION,
     accessKeyId: process.env.AWS_YOUR_ACCESS_KEY,
     secretAccessKey: process.env.AWS_YOUR_SECRET_KEY,
+  },
+
+  // Token settings
+  tokens: {
+    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || '',
+    accessTokenExpires: process.env.ACCESS_TOKEN_EXPIRES || '10',
+    refreshTokenExpires: process.env.REFRESH_TOKEN_EXPIRES || '30',
+    refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || '',
+  },
+
+  // Google OAuth2 settings
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+
+  // Other settings
+  clients: {
+    web: {
+      url: process.env.WEB_CLIENT_URL || 'http://localhost:3000',
+    },
+    admin: {
+      url: process.env.ADMIN_CLIENT_URL || 'http://localhost:3002',
+    },
   },
 };

@@ -1,8 +1,9 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { Server, Socket } from "socket.io";
-import AppError from "../app/ErrorHandler/AppError";
-import httpStatus from "http-status";
-import { logger } from "../app/logger";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Server, Socket } from 'socket.io';
+import AppError from '../app/ErrorHandler/AppError';
+import httpStatus from 'http-status';
+import { logger } from '../app/logger';
 
 const socketIO = (io: Server): void => {
   // Authentication middleware - runs before connection
@@ -14,9 +15,14 @@ const socketIO = (io: Server): void => {
 
       if (!token) {
         logger.warn(
-          `Connection rejected: No token provided for socket ${socket.id}`
+          `Connection rejected: No token provided for socket ${socket.id}`,
         );
-        return next(new AppError(httpStatus.UNAUTHORIZED,"Authentication error: No token provided"));
+        return next(
+          new AppError(
+            httpStatus.UNAUTHORIZED,
+            'Authentication error: No token provided',
+          ),
+        );
       }
 
       // Verify JWT token and detect activity
@@ -24,12 +30,19 @@ const socketIO = (io: Server): void => {
 
       if (!decoded) {
         logger.warn(
-          `Authentication failed: Invalid token format for socket ${socket.id}`
+          `Authentication failed: Invalid token format for socket ${socket.id}`,
         );
-        return next(new AppError(httpStatus.UNAUTHORIZED,"Authentication error: Invalid token"));
+        return next(
+          new AppError(
+            httpStatus.UNAUTHORIZED,
+            'Authentication error: Invalid token',
+          ),
+        );
       }
 
-      logger.info(`Token verified for socket ${socket.id}, user: ${JSON.stringify(decoded)}`);
+      logger.info(
+        `Token verified for socket ${socket.id}, user: ${JSON.stringify(decoded)}`,
+      );
 
       // You could attach decoded info to socket
       (socket as any).user = decoded;
@@ -38,18 +51,23 @@ const socketIO = (io: Server): void => {
     } catch (err: unknown) {
       if (err instanceof Error) {
         logger.error(`Authentication failed: ${err.message}`);
-        next(new AppError(httpStatus.UNAUTHORIZED,"Authentication error: Invalid token"));
+        next(
+          new AppError(
+            httpStatus.UNAUTHORIZED,
+            'Authentication error: Invalid token',
+          ),
+        );
       } else {
-        logger.error("Authentication failed: Unknown error");
-        next(new AppError(httpStatus.UNAUTHORIZED,"Authentication error"));
+        logger.error('Authentication failed: Unknown error');
+        next(new AppError(httpStatus.UNAUTHORIZED, 'Authentication error'));
       }
     }
   });
 
-  io.on("connection", (socket: Socket) => {
+  io.on('connection', (socket: Socket) => {
     logger.info(`Socket connected: ID ${socket.id}`);
 
-    socket.on("disconnect", () => {
+    socket.on('disconnect', () => {
       logger.info(`Socket disconnected: ID ${socket.id}`);
     });
   });

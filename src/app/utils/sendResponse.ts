@@ -1,11 +1,15 @@
 import { Response } from 'express';
+type TToken = {
+  accessToken: string;
+  refreshToken: string;
+};
 
 type TResponse<T> = {
   statusCode: number;
   success: boolean;
   message?: string;
   data: T;
-  token?: string;
+  token?: TToken;
 };
 
 const sendResponse = <T>(res: Response, responseData: TResponse<T>) => {

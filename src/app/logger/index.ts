@@ -41,7 +41,7 @@ const createLogTransports = (level: string, folder: string) => {
 // General logger for all log levels (info, warn, error)
 export const logger = createLogger({
   level: 'info', // Default level is info (this will cover info and warn)
-  format: combine(label({ label: config.name }), timestamp(), myFormat),
+  format: combine(label({ label: config.appName }), timestamp(), myFormat),
   transports: [
     // Console transport for all log levels (with color)
     new transports.Console({

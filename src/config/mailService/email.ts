@@ -1,22 +1,22 @@
-import nodemailer, { SendMailOptions, Transporter } from "nodemailer";
-import config from "../../config/index";
-import { logger } from "../logger";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import nodemailer, { SendMailOptions, Transporter } from 'nodemailer';
+import config from '../../config/index';
+import { logger } from '../../app/logger';
 
 // Create transporter with proper type
 const transport: Transporter = nodemailer.createTransport(config.email.smtp);
 
-
 export const verifyEmailTransport = async () => {
-  if (config.node === "test") return; // skip in test environment
+  if (config.node === 'test') return; // skip in test environment
 
   try {
     await transport.verify();
-    logger.info("Connected to email server");
+    logger.info('Connected to email server');
   } catch (err: any) {
     logger.warn(
-      "Unable to connect to email server. Make sure you have configured the SMTP options in .env"
+      'Unable to connect to email server. Make sure you have configured the SMTP options in .env',
     );
-    logger.error("SMTP Connection Error:", err.message || err);
+    logger.error('SMTP Connection Error:', err.message || err);
   }
 };
 
@@ -24,7 +24,7 @@ export const verifyEmailTransport = async () => {
 const sendEmail = async (
   to: string,
   subject: string,
-  html: string
+  html: string,
 ): Promise<void> => {
   const msg: SendMailOptions = {
     from: config.email.from,
@@ -36,4 +36,3 @@ const sendEmail = async (
 };
 
 export { sendEmail, transport };
-

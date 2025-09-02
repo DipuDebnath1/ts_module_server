@@ -22,8 +22,7 @@ const userSchema = new Schema<TUser>(
     },
     phone: {
       type: String,
-      required: true,
-      unique: true,
+      required: false,
     },
     isPhoneVerified: {
       type: Boolean,
@@ -34,13 +33,21 @@ const userSchema = new Schema<TUser>(
       required: true,
       private: true,
     },
-    img: {
+    image: {
       type: String,
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
+      enum: ['user', 'admin', 'superAdmin'],
+    },
+
+    oneTimeCode: {
+      type: String,
+      default: null,
+    },
+    isResetPassword: {
+      type: Boolean,
+      default: false,
     },
     isDeleted: {
       type: Boolean,
@@ -51,14 +58,6 @@ const userSchema = new Schema<TUser>(
     timestamps: true,
   },
 );
-
-// // Hide password in JSON responses
-// userSchema.set('toJSON', {
-//   transform: function (doc, ret) {
-//     delete ret.password;
-//     return ret;
-//   },
-// });
 
 userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
@@ -76,7 +75,8 @@ userSchema.statics.isPhoneNumberTaken = async function (
 // Instance method to check password match
 userSchema.methods.isPasswordMatch = async function (password: string) {
   const user = this;
-  return bcrypt.compare(password, user.password);
+  const res = await bcrypt.compare(password, user.password);
+  return res;
 };
 
 // Pre-save hook to hash the password

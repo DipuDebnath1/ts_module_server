@@ -1,22 +1,22 @@
-import http from "http";
-import mongoose from "mongoose";
-import socketIo, { Server as SocketIOServer } from "socket.io";
-import app from "./app";
-import { logger } from "./app/logger";
-import config from "./config";
-import { soketCorsOption } from "./config/corsOptions";
-import socketIO from "./config/socketIO"; // <-- your custom socket handler
-import { verifyEmailTransport } from "./app/mailSender/email";
+import http from 'http';
+import mongoose from 'mongoose';
+import socketIo, { Server as SocketIOServer } from 'socket.io';
+import app from './app';
+import { logger } from './app/logger';
+import config from './config';
+import { soketCorsOption } from './config/corsOptions';
+import socketIO from './config/socketIO'; // <-- your custom socket handler
+import { verifyEmailTransport } from './config/mailService/email';
 
 let server: http.Server;
 
 async function main() {
-  const {ipAddress, socketPort, serverPort} = config;
+  const { ipAddress, socketPort, serverPort } = config;
 
   try {
     // Connect to MongoDB
     await mongoose.connect(config.databaseUri);
-    logger.info("Database connected successfully");
+    logger.info('Database connected successfully');
 
     // Start Express server
     server = app.listen(serverPort, ipAddress, () => {
@@ -36,12 +36,10 @@ async function main() {
     globalThis.io = io;
 
     socketServer.listen(socketPort, ipAddress, () => {
-      logger.info(
-        `Socket.IO listening at port:${socketPort}`
-      );
+      logger.info(`Socket.IO listening at port:${socketPort}`);
     });
   } catch (err: unknown) {
-    logger.error("MongoDB connection error:", err);
+    logger.error('MongoDB connection error:', err);
     process.exit(1);
   }
 }
@@ -55,7 +53,7 @@ main();
 const exitHandler = () => {
   if (server) {
     server.close(() => {
-      logger.info("Server closed");
+      logger.info('Server closed');
       process.exit(1);
     });
   } else {
@@ -67,17 +65,17 @@ const exitHandler = () => {
  * Unexpected error handler
  */
 const unexpectedErrorHandler = (error: unknown) => {
-  logger.error("Unexpected error:", error);
+  logger.error('Unexpected error:', error);
   exitHandler();
 };
 
 // Catch uncaught errors
-process.on("uncaughtException", unexpectedErrorHandler);
-process.on("unhandledRejection", unexpectedErrorHandler);
+process.on('uncaughtException', unexpectedErrorHandler);
+process.on('unhandledRejection', unexpectedErrorHandler);
 
 // Handle SIGTERM
-process.on("SIGTERM", () => {
-  logger.info("SIGTERM received");
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received');
   if (server) {
     server.close();
   }
