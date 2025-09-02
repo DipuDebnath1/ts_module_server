@@ -57,7 +57,7 @@ const LoginUser: RequestHandler = catchAsync(async (req, res, next) => {
 
   const tokens = await generateAuthTokens(data._id.toString());
 
-  if (loginData?.type === 'web') {
+  if (loginData?.device === 'web') {
     res.cookie('access_token', tokens.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

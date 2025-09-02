@@ -57,11 +57,7 @@ router.post(
 );
 
 // User Logout
-router.post(
-  '/logout',
-  validationRequest(AuthValidation.logoutVerification),
-  AuthController.LogoutUser,
-);
+router.post('/logout', AuthController.LogoutUser);
 
 // Update Password
 router.post(
