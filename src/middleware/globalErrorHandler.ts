@@ -1,20 +1,124 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// /* eslint-disable @typescript-eslint/no-unused-vars */
+// import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 
-const globalErrorHandler :ErrorRequestHandler = (
-  err: unknown,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-):void => {
-  const statusCode = (err as any).statusCode || 500;
-  const message = (err as any).message || 'something went wrong';
+// const globalErrorHandler: ErrorRequestHandler = (
+//   err: unknown,
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ): void => {
+//   const statusCode = (err as any).statusCode || 500;
+//   const message = (err as any).message || 'something went wrong';
 
-   res.status(statusCode).json({
-    success: false,
-    message,
-    error: err,
+//   res.status(statusCode).json({
+//     success: false,
+//     message,
+//     error: err,
+//   });
+// };
+
+// export default globalErrorHandler;
+
+import { ErrorRequestHandler } from 'express';
+import { IErrorMessage } from '../types/errors.types';
+import config from '../config';
+import handleZodError from '../app/ErrorHandler/handleZodError';
+import handleValidationError from '../app/ErrorHandler/handleValidationError';
+import handleDuplicateError from '../app/ErrorHandler/handleDuplicateError';
+import AppError from '../app/ErrorHandler/AppError';
+import { logger } from '../app/logger';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
+  // Log error
+  // config.node === 'development'
+  //   ? console.log('🚨 globalErrorHandler ~~ ', error)
+  //   : logger.error('🚨 globalErrorHandler ~~ ', error);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  config.node === 'development'
+    ? // eslint-disable-next-line no-console
+      console.log('🚨 globalErrorHandler ~~ ', error)
+    : logger.error('🚨 globalErrorHandler ~~ ', error);
+
+  let code = 500;
+  let message = 'Something went wrong';
+  let errorMessages: IErrorMessage[] = [];
+
+  // Handle ZodError
+  if (error.name === 'ZodError') {
+    const simplifiedError = handleZodError(error);
+    code = simplifiedError.code;
+    message = `${simplifiedError.errorMessages
+      .map((err) => err.message)
+      .join(', ')}`;
+    errorMessages = simplifiedError.errorMessages;
+  }
+  // Handle ValidationError (e.g., Mongoose)
+  else if (error.name === 'ValidationError') {
+    const simplifiedError = handleValidationError(error);
+    code = simplifiedError.code;
+    message = `${simplifiedError.errorMessages
+      .map((err) => err.message)
+      .join(', ')}`;
+    errorMessages = simplifiedError.errorMessages;
+  }
+  // Handle DuplicateError (e.g., from database unique constraint violation)
+  else if (error.name === 'DuplicateError') {
+    const simplifiedError = handleDuplicateError(error);
+    code = simplifiedError.code;
+    message = `${simplifiedError.errorMessages
+      .map((err) => err.message)
+      .join(', ')}`;
+    errorMessages = simplifiedError.errorMessages;
+  } else if (error.name === 'MongoServerError') {
+    const simplifiedError = handleDuplicateError(error);
+    code = simplifiedError.code;
+    message = `${simplifiedError.errorMessages
+      .map((err) => err.message)
+      .join(', ')}`;
+    errorMessages = simplifiedError.errorMessages;
+  }
+  // Handle ApiError (custom error type)
+  else if (error instanceof AppError) {
+    code = error.statusCode;
+    message = error.message || 'Something went wrong';
+    errorMessages = error.message
+      ? [
+          {
+            path: '',
+            message: error.message,
+          },
+        ]
+      : [];
+  }
+  // Handle other general errors
+  else if (error instanceof Error) {
+    message = error.message || 'Internal Server Error';
+    errorMessages = error.message
+      ? [
+          {
+            path: '',
+            message: error.message,
+          },
+        ]
+      : [];
+  }
+
+  // Format multiple error messages as a comma-separated list in the message field
+  const formattedMessage =
+    errorMessages.length > 1
+      ? errorMessages.map((err) => err.message).join(', ')
+      : message;
+
+  // Send response with statusCode, success, message, and error
+  res.status(code).json({
+    code,
+    message: `${formattedMessage}`,
+    error: errorMessages,
+    stack: config.node === 'development' ? error?.stack : undefined,
   });
 };
+
 export default globalErrorHandler;

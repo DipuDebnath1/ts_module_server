@@ -80,7 +80,7 @@ const LoginUser: RequestHandler = catchAsync(async (req, res, next) => {
     success: true,
     message: 'User Sign in successfully',
     data: data,
-    token: tokens,
+    tokens: tokens,
   });
 });
 
@@ -206,7 +206,7 @@ const RefreshUserToken: RequestHandler = catchAsync(async (req, res, next) => {
     success: true,
     message: 'User token refreshed successfully',
     data: null,
-    token: tokens,
+    tokens: tokens,
   });
 });
 
