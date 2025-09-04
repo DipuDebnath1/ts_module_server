@@ -28,6 +28,12 @@ router.post(
   AuthController.LoginUser,
 );
 
+router.post(
+  '/login_with_oauth',
+  validationRequest(AuthValidation.loginWithOAuthValidation),
+  AuthController.LoginWithOAuth,
+);
+
 // OTP Verification
 router.post(
   '/verify_otp',

@@ -34,7 +34,7 @@ const createUser: RequestHandler = catchAsync(async (req, res, next) => {
       result = await UserServices.isUpdateUser(isUser.id, { ...req.body });
     }
   } else {
-    result = await AuthServices.createUser(userData);
+    result = await AuthServices.signUpUser(userData);
   }
 
   sendResponse(res, {
@@ -210,10 +210,42 @@ const RefreshUserToken: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
+const LoginWithOAuth: RequestHandler = catchAsync(async (req, res, next) => {
+  const { token, provider } = req.body;
+
+  if (!token || !provider)
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Token and provider are required',
+    );
+
+  let result;
+
+  switch (provider) {
+    case 'google':
+      result = await AuthServices.googleLogin(token);
+      break;
+    // Add more cases for other providers if needed
+    default:
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid provider');
+  }
+
+  const tokens = await generateAuthTokens(result._id.toString());
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User logged in successfully',
+    data: result,
+    tokens: tokens,
+  });
+});
+
 export const AuthController = {
   createUser,
   LoginUser,
   LogoutUser,
+  LoginWithOAuth,
   UpdatePassword,
   ResetPassword,
   ForgotPassword,

@@ -7,6 +7,10 @@ import { sendOtpVerificationMail } from '../../../config/mailService/sendOtp';
 import generateOtp from '../../utils/genarateOtp';
 
 // **********USER SERVICES**********
+// create User
+const createUser = async (payload: TUser) => {
+  return await User.create(payload);
+};
 
 // Find Single User
 const getUserById = async (id: string) => {
@@ -17,6 +21,7 @@ const getUserByEmail = async (email: string) => {
   return await User.findOne({ email });
 };
 
+// Update User
 const isUpdateUser = async (userId: string, updateBody: Partial<TUser>) => {
   const user = await getUserById(userId);
   if (!user) {
@@ -63,6 +68,7 @@ const updateUserProfile = async (
 };
 
 export const UserServices = {
+  createUser,
   getUserByEmail,
   isUpdateUser,
   getUserById,

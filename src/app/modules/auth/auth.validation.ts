@@ -143,6 +143,18 @@ const refreshTokenVerification = z.object({
   }),
 });
 
+// login with oauth validation
+const loginWithOAuthValidation = z.object({
+  body: z.object({
+    token: z.string({
+      required_error: 'OAuth token is required',
+    }),
+    provider: z.enum(['google', 'facebook', 'twitter', 'apple', 'github'], {
+      required_error: 'OAuth provider is required',
+    }),
+  }),
+});
+
 const AuthValidation = {
   userSignUpValidation,
   userSignInValidation,
@@ -153,6 +165,7 @@ const AuthValidation = {
   emailVerificationSchema,
   refreshTokenVerification,
   logoutVerification,
+  loginWithOAuthValidation,
 };
 
 export default AuthValidation;

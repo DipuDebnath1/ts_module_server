@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import AppError from '../../ErrorHandler/AppError';
 import { TUser } from '../user/user.interface';
-import { User } from '../user/user.model';
 import { UserServices } from '../user';
 import generateOtp from '../../utils/genarateOtp';
 import { sendOtpVerificationMail } from '../../../config/mailService/sendOtp';
+import { OAuth2Client } from 'google-auth-library';
+import config from '../../../config';
 
 // Create User in Database
-const createUser = async (userData: TUser) => {
+const signUpUser = async (userData: TUser) => {
   const code = generateOtp();
-  const res = await User.create({ ...userData, oneTimeCode: code });
+  const res = await UserServices.createUser({ ...userData, oneTimeCode: code });
   sendOtpVerificationMail(res.email, code);
   return res;
 };
@@ -91,11 +93,39 @@ const verifyOtp = async (email: string, otp: string) => {
   return user;
 };
 
+// google login
+const googleLogin = async (token: string) => {
+  const googleClient = new OAuth2Client(config.googleClientId);
+  const ticket = await googleClient.verifyIdToken({
+    idToken: token,
+    audience: config.googleClientId,
+  });
+
+  const payload = ticket.getPayload();
+
+  if (!payload)
+    throw new AppError(httpStatus.BAD_REQUEST, 'google login failed!');
+
+  const data: any = {
+    name: payload.name!,
+    email: payload.email!,
+    image: payload.picture!,
+  };
+
+  let user;
+
+  user = await UserServices.getUserByEmail(data.email!);
+  if (!user) user = await UserServices.createUser(data);
+
+  return user;
+};
+
 export const AuthServices = {
-  createUser,
+  signUpUser,
   loginUser,
   forgotPassword,
   resetPassword,
   updatePassword,
   verifyOtp,
+  googleLogin,
 };

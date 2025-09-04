@@ -19,6 +19,7 @@ const userSchema = new Schema<TUser>(
     isEmailVerified: {
       type: Boolean,
       default: false,
+      required: false,
     },
     phone: {
       type: String,
@@ -27,31 +28,38 @@ const userSchema = new Schema<TUser>(
     isPhoneVerified: {
       type: Boolean,
       default: false,
+      required: false,
     },
     password: {
       type: String,
-      required: true,
+      required: false,
       private: true,
     },
     image: {
       type: String,
+      required: false,
     },
     role: {
       type: String,
       enum: ['user', 'admin', 'superAdmin'],
+      default: 'user',
+      required: false,
     },
 
     oneTimeCode: {
       type: String,
       default: null,
+      required: false,
     },
     isResetPassword: {
       type: Boolean,
       default: false,
+      required: false,
     },
     isDeleted: {
       type: Boolean,
       default: false,
+      required: false,
     },
   },
   {
@@ -83,7 +91,7 @@ userSchema.methods.isPasswordMatch = async function (password: string) {
 userSchema.pre('save', async function (next) {
   const user = this;
   if (user.isModified('password')) {
-    user.password = await bcrypt.hash(user.password, 8);
+    user.password = await bcrypt.hash(user.password!, 8);
   }
   next();
 });

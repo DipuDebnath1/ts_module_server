@@ -31,11 +31,6 @@ import { logger } from '../app/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
-  // Log error
-  // config.node === 'development'
-  //   ? console.log('🚨 globalErrorHandler ~~ ', error)
-  //   : logger.error('🚨 globalErrorHandler ~~ ', error);
-
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   config.node === 'development'
     ? // eslint-disable-next-line no-console

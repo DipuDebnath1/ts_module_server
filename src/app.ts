@@ -23,13 +23,6 @@ const app: Application = express();
 app.use(helmet());
 app.use(compression());
 
-// 🔹 CORS (configure via ENV for production)
-// app.use(
-//   cors({
-//     origin: process.env.CORS_ORIGIN || '*',
-//     credentials: true,
-//   }),
-// );
 app.use(cors(serverCorsOptions));
 
 app.use(cookieParser());
