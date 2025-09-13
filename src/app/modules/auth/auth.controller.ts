@@ -12,15 +12,14 @@ import {
 } from '../tokens/token.service';
 import { TUser, UserServices } from '../user';
 import { AuthServices } from './auth.service';
+import { addUrlToFileObject } from '../../utils/urlAddInUploadedImage';
 
 // Create User
 const createUser: RequestHandler = catchAsync(async (req, res, next) => {
   // Handle file upload if present
   const userData: TUser = req.body;
 
-  if (req.file) {
-    userData.image = req.file.filename; // Store the uploaded file name
-  }
+  if (req.file) userData.image = addUrlToFileObject(req.file).url; // Store the uploaded file name
 
   // const result = await UserServices.createUserIntoDB(userData);
   const { email } = req.body;
