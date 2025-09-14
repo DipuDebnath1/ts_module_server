@@ -1,24 +1,5 @@
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 // /* eslint-disable @typescript-eslint/no-unused-vars */
-// import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
-
-// const globalErrorHandler: ErrorRequestHandler = (
-//   err: unknown,
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ): void => {
-//   const statusCode = (err as any).statusCode || 500;
-//   const message = (err as any).message || 'something went wrong';
-
-//   res.status(statusCode).json({
-//     success: false,
-//     message,
-//     error: err,
-//   });
-// };
-
-// export default globalErrorHandler;
 
 import { ErrorRequestHandler } from 'express';
 import { IErrorMessage } from '../types/errors.types';
@@ -46,7 +27,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     const simplifiedError = handleZodError(error);
     code = simplifiedError.code;
     message = `${simplifiedError.errorMessages
-      .map((err) => err.message)
+      .map((err) => `${err.path + ' ' + err.message}`)
       .join(', ')}`;
     errorMessages = simplifiedError.errorMessages;
   }
@@ -57,6 +38,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     message = `${simplifiedError.errorMessages
       .map((err) => err.message)
       .join(', ')}`;
+
     errorMessages = simplifiedError.errorMessages;
   }
   // Handle DuplicateError (e.g., from database unique constraint violation)
@@ -104,7 +86,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   // Format multiple error messages as a comma-separated list in the message field
   const formattedMessage =
     errorMessages.length > 1
-      ? errorMessages.map((err) => err.message).join(', ')
+      ? errorMessages.map((err) => err.path + ' ' + err.message).join(', ')
       : message;
 
   // Send response with statusCode, success, message, and error
