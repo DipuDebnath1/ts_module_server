@@ -15,9 +15,11 @@ const fileUpload = fileUploader(UPLOADS_FOLDER);
 
 // Profile routes
 
+router.get('/self-profile', auth('common'), UserController.GetSelfProfile);
+
 router.put(
   '/update-profile',
-  auth('user'),
+  auth('common'),
   fileUpload.single('image'),
   validationRequest(userValidation.updateProfileValidation),
   UserController.UpdateUserProfile,
