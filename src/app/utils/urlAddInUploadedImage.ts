@@ -14,7 +14,7 @@ interface FileObject {
 // Function to generate the URL
 function generateImageUrl(destination: string, filename: string): string {
   // Extract the folder path after 'public' to create the URL
-  const folderPath = destination.replace('./', '');
+  const folderPath = destination.replace('./public/', '');
   // Construct the URL
   return folderPath + '/' + filename;
 }
