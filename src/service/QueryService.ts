@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Model,
@@ -41,16 +42,20 @@ export default class QueryService<T extends Document> {
   async findWithQueryParams(
     queryObj: QueryObject<T>,
   ): Promise<PaginationResult<T>> {
-    const {
+    let {
       page = 1,
       limit = 10,
       filters = {},
-      sort = { createdAt: -1 },
+      sort = {},
       select,
       populate,
     } = queryObj;
 
+    page = Number(page) < 1 ? 1 : Number(page);
+    limit = Number(limit) < 1 ? 10 : Number(limit);
+
     const skip = (page - 1) * limit;
+    sort = Object.keys(sort).length ? sort : { createdAt: -1 };
 
     let query = this.model.find(filters).skip(skip).limit(limit).sort(sort);
 
@@ -63,11 +68,11 @@ export default class QueryService<T extends Document> {
     ]);
 
     return {
-      data,
+      data: data,
       pagination: {
-        total,
         page,
         limit,
+        total,
         totalPages: Math.ceil(total / limit),
       },
     };
@@ -78,9 +83,10 @@ export default class QueryService<T extends Document> {
    */
   async aggregateWithPagination(
     pipeline: PipelineStage[],
-    page = 1,
-    limit = 10,
+    query?: { page?: number; limit?: number },
   ): Promise<PaginationResult<any>> {
+    const page = Number(query?.page) || 1;
+    const limit = Number(query?.limit) || 10;
     const skip = (page - 1) * limit;
 
     const paginatedPipeline: PipelineStage[] = [
