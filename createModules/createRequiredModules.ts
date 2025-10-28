@@ -17,7 +17,6 @@ const router = express.Router();
 export const ${fileName.replace('.route.ts', 'Route')} = router;
 `;
 };
-
 export const createFolderAndFiles = (
   folderPath: string,
   files: string[],
@@ -26,9 +25,9 @@ export const createFolderAndFiles = (
   // create folder if does not exist
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath, { recursive: true });
-    console.log(`✅ Folder created: ${folderPath}`);
+    console.log(`✅ 📁 Folder created: ${folderPath}`);
   } else {
-    console.log(`ℹ️ Folder already exists: ${folderPath}`);
+    console.log(`ℹ️ 📁 Folder already exists: ${folderPath}`);
   }
 
   // create files inside the folder
@@ -43,9 +42,9 @@ export const createFolderAndFiles = (
       }
 
       fs.writeFileSync(filesPath, content);
-      console.log(`✅ File created: ${filesPath}`);
+      console.log(`✅ 📄 File created: ${filesPath}`);
     } else {
-      console.log(`ℹ️ File already exists: ${filesPath}`);
+      console.log(`ℹ️ 📄 File already exists: ${filesPath}`);
     }
   });
 };
