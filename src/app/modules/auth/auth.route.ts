@@ -28,6 +28,14 @@ router.post(
   AuthController.LoginUser,
 );
 
+// Admin Login
+router.post(
+  '/admin_signin',
+  validationRequest(AuthValidation.userSignInValidation),
+  AuthController.LoginAdmin,
+);
+
+// OAuth Login
 router.post(
   '/login_with_oauth',
   validationRequest(AuthValidation.loginWithOAuthValidation),

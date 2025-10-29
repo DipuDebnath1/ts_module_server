@@ -83,6 +83,41 @@ const LoginUser: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 
+// login admin Dashboard
+const LoginAdmin: RequestHandler = catchAsync(async (req, res, next) => {
+  const loginData = req.body;
+
+  const data = await AuthServices.loginUser(loginData);
+
+  if (data.role !== 'admin' && data.role !== 'superAdmin')
+    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not admin');
+
+  const tokens = await generateAuthTokens(data._id.toString());
+
+  res.cookie('access_token', tokens.accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: Number(config.tokens.accessTokenExpires || 7) * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  res.cookie('refresh_token', tokens.refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge:
+      Number(config.tokens.refreshTokenExpires || 30) * 24 * 60 * 60 * 1000, // 30 days
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Admin Sign in successfully',
+    data: data,
+    tokens: tokens,
+  });
+});
+
 // Verify OTP
 const VerifyOtp: RequestHandler = catchAsync(async (req, res, next) => {
   const { email, oneTimeCode } = req.body;
@@ -243,6 +278,7 @@ const LoginWithOAuth: RequestHandler = catchAsync(async (req, res, next) => {
 export const AuthController = {
   createUser,
   LoginUser,
+  LoginAdmin,
   LogoutUser,
   LoginWithOAuth,
   UpdatePassword,
