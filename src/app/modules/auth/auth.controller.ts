@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
@@ -90,7 +91,7 @@ const LoginAdmin: RequestHandler = catchAsync(async (req, res, next) => {
   const data = await AuthServices.loginUser(loginData);
 
   if (data.role !== 'admin' && data.role !== 'superAdmin')
-    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not admin');
+    throw new AppError(httpStatus.UNAUTHORIZED, 'wrong credentials');
 
   const tokens = await generateAuthTokens(data._id.toString());
 
@@ -159,19 +160,16 @@ const ResetPassword: RequestHandler = catchAsync(async (req, res, next) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Password reset successfully',
-    data:
-      config.node === 'production'
-        ? undefined
-        : { oneTimeCode: result?.oneTimeCode || null },
+    data: {},
   });
 });
 
 // update password
 const UpdatePassword: RequestHandler = catchAsync(async (req, res, next) => {
-  const { email, oldPassword, newPassword } = req.body;
-
+  const { user }: any = req;
+  const { oldPassword, newPassword } = req.body;
   const result = await AuthServices.updatePassword(
-    email,
+    user.email,
     oldPassword,
     newPassword,
   );
@@ -187,10 +185,10 @@ const UpdatePassword: RequestHandler = catchAsync(async (req, res, next) => {
 // Logout User
 const LogoutUser: RequestHandler = catchAsync(async (req, res, next) => {
   let token: string | undefined;
-  const { access_token } = req.cookies;
+  const { refresh_token } = req.cookies;
 
-  if (access_token) token = access_token;
-  if (!token) token = req.body.refresh_token.split(' ')[1];
+  if (refresh_token) token = refresh_token;
+  if (!token) token = req.body.refresh_token;
   if (!token) throw new AppError(httpStatus.BAD_REQUEST, 'Token is required');
 
   await invalidateUserAuthToken(token);
@@ -209,10 +207,10 @@ const LogoutUser: RequestHandler = catchAsync(async (req, res, next) => {
 // Refresh User Token
 const RefreshUserToken: RequestHandler = catchAsync(async (req, res, next) => {
   let token: string | undefined;
-  const { access_token } = req.cookies;
+  const { refresh_token } = req.cookies;
 
-  if (access_token) token = access_token;
-  if (!token) token = req.body.refresh_token.split(' ')[1];
+  if (refresh_token) token = refresh_token;
+  if (!token) token = req.body.refresh_token;
   if (!token) throw new AppError(httpStatus.BAD_REQUEST, 'Token is required');
 
   const tokens = await refreshUserAuthToken(token);
@@ -245,7 +243,7 @@ const RefreshUserToken: RequestHandler = catchAsync(async (req, res, next) => {
 });
 
 const LoginWithOAuth: RequestHandler = catchAsync(async (req, res, next) => {
-  const { token, provider } = req.body;
+  const { token, provider, name, email, image } = req.body;
 
   if (!token || !provider)
     throw new AppError(
@@ -253,16 +251,18 @@ const LoginWithOAuth: RequestHandler = catchAsync(async (req, res, next) => {
       'Token and provider are required',
     );
 
-  let result;
+  let result: any;
 
   switch (provider) {
     case 'google':
-      result = await AuthServices.googleLogin(token);
+      result = await AuthServices.googleLogin(token, name, email, image);
       break;
     // Add more cases for other providers if needed
     default:
       throw new AppError(httpStatus.BAD_REQUEST, 'Invalid provider');
   }
+
+  if (!result) throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid token');
 
   const tokens = await generateAuthTokens(result._id.toString());
 

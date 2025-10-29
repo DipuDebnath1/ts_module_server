@@ -17,8 +17,9 @@ const getUserById = async (id: string) => {
   return await User.findById(id);
 };
 
-const getUserByEmail = async (email: string) => {
-  return await User.findOne({ email });
+const getUserByEmail = async (email: string, selectFields?: string | '') => {
+  selectFields = selectFields || '';
+  return await User.findOne({ email }).select(selectFields);
 };
 
 // Update User

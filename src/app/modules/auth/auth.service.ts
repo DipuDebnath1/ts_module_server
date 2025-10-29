@@ -5,8 +5,8 @@ import { TUser } from '../user/user.interface';
 import { UserServices } from '../user';
 import generateOtp from '../../utils/genarateOtp';
 import { sendOtpVerificationMail } from '../../../config/mailService/sendOtp';
-import { OAuth2Client } from 'google-auth-library';
-import config from '../../../config';
+// import { OAuth2Client } from 'google-auth-library';
+// import config from '../../../config';
 
 // Create User in Database
 const signUpUser = async (userData: TUser) => {
@@ -21,15 +21,22 @@ const loginUser = async (loginData: { email: string; password: string }) => {
   const { email, password } = loginData;
 
   // Find user by email
-  const user = await UserServices.getUserByEmail(email);
+  const user = await UserServices.getUserByEmail(
+    email,
+    'name email image role password isDeleted isEmailVerified',
+  );
 
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
+
   if (user.isDeleted)
     throw new AppError(httpStatus.BAD_REQUEST, 'User account is deleted !');
+
   if (!user.isEmailVerified)
     throw new AppError(httpStatus.UNAUTHORIZED, 'Email is not verified !');
-  if (!user.isPasswordMatch(password))
-    throw new AppError(httpStatus.UNAUTHORIZED, 'Password is incorrect !');
+
+  const matchPassword = await user?.isPasswordMatch(password);
+  if (!matchPassword)
+    throw new AppError(httpStatus.UNAUTHORIZED, 'wrong credentials !');
 
   return user;
 };
@@ -70,11 +77,14 @@ const updatePassword = async (
   oldPassword: string,
   newPassword: string,
 ) => {
-  const user = await UserServices.getUserByEmail(email);
+  const user = await UserServices.getUserByEmail(email, 'email password');
+
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
-  const isOldPasswordMatch = await user.isPasswordMatch(oldPassword);
-  if (!isOldPasswordMatch)
+
+  const matchPassword = await user?.isPasswordMatch(oldPassword);
+  if (!matchPassword)
     throw new AppError(httpStatus.UNAUTHORIZED, 'Old password is incorrect !');
+
   user.password = newPassword;
   await user.save();
 
@@ -94,27 +104,37 @@ const verifyOtp = async (email: string, otp: string) => {
 };
 
 // google login
-const googleLogin = async (token: string) => {
-  const googleClient = new OAuth2Client(config.googleClientId);
-  const ticket = await googleClient.verifyIdToken({
-    idToken: token,
-    audience: config.googleClientId,
-  });
+const googleLogin = async (
+  token: string,
+  name: string,
+  email: string,
+  image: string,
+) => {
+  // const googleClient = new OAuth2Client(config.googleClientId);
+  // const ticket = await googleClient.verifyIdToken({
+  //   idToken: token,
+  //   audience: config.googleClientId,
+  // });
 
-  const payload = ticket.getPayload();
+  // const payload = ticket.getPayload();
 
-  if (!payload)
-    throw new AppError(httpStatus.BAD_REQUEST, 'google login failed!');
+  // if (!payload)
+  //   throw new AppError(httpStatus.BAD_REQUEST, 'google login failed!');
+
+  // const data: any = {
+  //   name: payload.name!,
+  //   email: payload.email!,
+  //   image: payload.picture!,
+  // };
 
   const data: any = {
-    name: payload.name!,
-    email: payload.email!,
-    image: payload.picture!,
+    name: name,
+    email: email,
+    image: image || '',
   };
 
   let user;
-
-  user = await UserServices.getUserByEmail(data.email!);
+  user = await UserServices.getUserByEmail(data.email, 'name email image role');
   if (!user) user = await UserServices.createUser(data);
 
   return user;

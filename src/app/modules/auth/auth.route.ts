@@ -66,10 +66,10 @@ router.post(
 // update Password
 router.post(
   '/update_password',
+  auth('common'),
   validationRequest(AuthValidation.updatePasswordValidation),
   AuthController.UpdatePassword,
 );
-
 // User Logout
 router.post('/logout', AuthController.LogoutUser);
 
@@ -77,7 +77,6 @@ router.post('/logout', AuthController.LogoutUser);
 router.post(
   '/refresh_token',
   validationRequest(AuthValidation.refreshTokenVerification),
-  auth('common'),
   AuthController.RefreshUserToken,
 );
 

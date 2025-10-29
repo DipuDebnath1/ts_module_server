@@ -145,14 +145,23 @@ const refreshTokenVerification = z.object({
 
 // login with oauth validation
 const loginWithOAuthValidation = z.object({
-  body: z.object({
-    token: z.string({
-      required_error: 'OAuth token is required',
-    }),
-    provider: z.enum(['google', 'facebook', 'twitter', 'apple', 'github'], {
-      required_error: 'OAuth provider is required',
-    }),
-  }),
+  body: z
+    .object({
+      name: z.string({
+        required_error: 'OAuth name is required',
+      }),
+      email: z
+        .string({
+          required_error: 'OAuth email is required',
+        })
+        .email('Invalid email format'),
+      image: z.string().optional(),
+      token: z.string().optional(),
+      provider: z.enum(['google', 'facebook', 'twitter', 'apple', 'github'], {
+        required_error: 'OAuth provider is required',
+      }),
+    })
+    .strict(),
 });
 
 const AuthValidation = {
