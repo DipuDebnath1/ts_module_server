@@ -1,0 +1,1959 @@
+{
+	"info": {
+		"_postman_id": "e3f14e4f-eda2-433f-b529-191f958268e5",
+		"name": "initial_postman",
+		"description": "Postman collection for API v1 routes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43516153",
+		"_collection_link": "https://galactic-firefly-153341-1.postman.co/workspace/My-Workspace~135f349a-618e-4895-82fd-27de29c7a4e8/collection/43516153-e3f14e4f-eda2-433f-b529-191f958268e5?action=share&source=collection_link&creator=43516153"
+	},
+	"item": [
+		{
+			"name": "Authentication Routes",
+			"item": [
+				{
+					"name": "UserSignUp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Admin",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "admin@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "dateOfBirth",
+									"value": "2000-10-10",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "Banani, Dhaka, Bangladesh",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "1qazxsw2",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "seller",
+									"description": "valid role --->  ['user', 'seller', 'driver', 'creator']",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/auth/signup",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Admin",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "admin@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "dateOfBirth",
+											"value": "2000-10-10",
+											"type": "text"
+										},
+										{
+											"key": "location",
+											"value": "Banani, Dhaka, Bangladesh",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "1qazxsw2",
+											"type": "text"
+										},
+										{
+											"key": "role",
+											"value": "seller",
+											"description": "valid role --->  ['user', 'seller', 'driver', 'creator']",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/{{version}}/auth/signup",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"{{version}}",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 10:22:32 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "107"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"6b-XKYBGb/Z/nDF11xTyEtNNmc7whY\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=CdKkF3TULoPn%2Bd6QgHulVD329FFYGH6BccyuLoCvsUgoHXB%2F8W7iffsiRSf20kZY1RaUK4KF97Ab0rpxD6b83XQb4zxvas%2BsohENsoG7\"}]}"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9961f3cd8f75d4ac-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 201,\n    \"message\": \"please verify OTP sent to email\",\n    \"data\": {\n        \"oneTimeCode\": 486117\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "User Signin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the JSON response body\r",
+									"let response = pm.response.json();\r",
+									"// Check if the response code is 200 (Login Successful)\r",
+									"if (response.statusCode === 200) {\r",
+									"// Extract the access token\r",
+									"let accessToken = response.tokens.accessToken;\r",
+									"\r",
+									"// set user access token   \r",
+									"pm.globals.set(\"userAccessToken\", accessToken);\r",
+									"console.log(\"Access token set in global variable: userAccessToken\");\r",
+									"\r",
+									"// set admin token\r",
+									"if(response.data.role===\"admin\"){\r",
+									"pm.globals.set(\"adminAccessToken\", accessToken);\r",
+									"console.log(\"Access token set in global variable: adminAccessToken\");\r",
+									"}\r",
+									"\r",
+									"// Set the access token in a global variable\r",
+									"} else {\r",
+									"console.log(\"Login failed: \" + response.message);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"device\":\"web\",\r\n    // \"email\": \"user@gmail.com\",\r\n    \"email\":\"user@gmail.com\",\r\n    // \"email\":\"provider@gmail.com\",\r\n    \"password\":\"1qazxsw2\"\r\n    // \"password\": \"2wsxzaq1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/auth/signin",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"signin"
+							],
+							"query": [
+								{
+									"key": "select",
+									"value": "name email image",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    // \"device\":\"web\",\r\n    // \"email\": \"user@gmail.com\",\r\n    \"email\":\"user@gmail.com\",\r\n    // \"email\":\"provider@gmail.com\",\r\n    \"password\":\"1qazxsw2\"\r\n    // \"password\": \"2wsxzaq1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/{{version}}/auth/signin",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"{{version}}",
+										"auth",
+										"signin"
+									],
+									"query": [
+										{
+											"key": "select",
+											"value": "name email image",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 10:14:27 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"28e-J6gS/pu22ndYn9aFzqtBip/venY\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=wt%2BMytRMv718sOJhRWhfwNBdCpQ8WIHQoLyQ7BPtKzXfet5oiGDRidLsVowc4%2FAc4%2FjaHP05JnpjKoxd3uxY6hYtfO5TvvYzwjEB7vRU\"}]}"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9961e7f48ce81ed4-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"User Sign in successfully\",\n    \"data\": {\n        \"_id\": \"6901e29416cfddaafb55041d\",\n        \"name\": \"User\",\n        \"email\": \"user@gmail.com\",\n        \"role\": \"user\",\n        \"image\": null,\n        \"isEmailVerified\": true,\n        \"isDeleted\": false\n    },\n    \"tokens\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZTI5NDE2Y2ZkZGFhZmI1NTA0MWQiLCJpYXQiOjE3NjE3MzI4NjMsImV4cCI6MzUyMzQ2NjMyNiwidHlwZSI6ImFjY2VzcyJ9.7HtLnGW7hkgDWe6Yxtxym8upAGv05kHLMBJfFEjkTYI\",\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZTI5NDE2Y2ZkZGFhZmI1NTA0MWQiLCJpYXQiOjE3NjE3MzI4NjMsImV4cCI6MzUyNjA1NzcyNiwidHlwZSI6InJlZnJlc2gifQ.GnW9O4qUZRXO3oM_1t7_4rWGKzFgPrxYoNj5kl1G1g4\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "OAuth Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the JSON response body\r",
+									"let response = pm.response.json();\r",
+									"// Check if the response code is 200 (Login Successful)\r",
+									"if (response.statusCode === 200) {\r",
+									"// Extract the access token\r",
+									"let accessToken = response.tokens.accessToken;\r",
+									"\r",
+									"// set user access token   \r",
+									"pm.globals.set(\"userAccessToken\", accessToken);\r",
+									"console.log(\"Access token set in global variable: userAccessToken\");\r",
+									"\r",
+									"// set admin token\r",
+									"if(response.data.role===\"admin\"){\r",
+									"pm.globals.set(\"adminAccessToken\", accessToken);\r",
+									"console.log(\"Access token set in global variable: adminAccessToken\");\r",
+									"}\r",
+									"\r",
+									"// Set the access token in a global variable\r",
+									"} else {\r",
+									"console.log(\"Login failed: \" + response.message);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjJkN2VkMzM4YzBmMTQ1N2IyMTRhMjc0YjVlMGU2NjdiNDRhNDJkZGUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI5MDEzMDcyNjEwMS1nYWVibGw5Y3Z2NWh0Z2g4cWJlbzhqZTZvOGtsNGxrYS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImF1ZCI6IjkwMTMwNzI2MTAxLWdhZWJsbDljdnY1aHRnaDhxYmVvOGplNm84a2w0bGthLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEwMDcxOTk1NDY1MzEyMjY5OTY1IiwiZW1haWwiOiJxYWdwdDVAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc1Njk3ODczNiwibmFtZSI6IlF1YW50dW0gQWxsaWFuY2UgR1BUIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0phaThYN3otamotQUZGRVRxT1JwTWFvYnQxZWNqY1RQd1VpS0M4a1Z2d3hpaWozZU09czk2LWMiLCJnaXZlbl9uYW1lIjoiUXVhbnR1bSBBbGxpYW5jZSBHUFQiLCJpYXQiOjE3NTY5NzkwMzYsImV4cCI6MTc1Njk4MjYzNiwianRpIjoiN2Y0YmE3M2ZkODM0ZmFhOTA4ODc2MjA2NzhmYjk1ZjcyOWZkMDJlZiJ9.N8Qx0dpgHYdURAD7G1hhfZr1gzX4mbp-73g9isxwQgNaKsMclgwDJeM1vySoWopWuw8x2wgPi-gUzVymo2kENa7Cx_Z-8DB16NqhI1Yg3BZfSLlohEtSREbvrGVOC1fdNoLwZqxt9s_7mtSB_xjQPRDoYXLPe8JGmPAkCYUAqQOYEQVzG3SBquXcxbTqjZIor7cNcyy1bE0Nfs8VbvXavhCc4UyaBMuwZXMKPCdA_cYKfljLSn18z08bGlugHZgt0SeCKeb3r_PRAIjdNlwUQQo1dRdlNMigMTmbtJgw26GsLpJ1zQ0PNTVTV_EM958JUJ63yCvYrQJehmJDRfQt8w\",\r\n    \"provider\":\"google\",\r\n    \"name\":\"Google\",\r\n    \"email\":\"google@gmail.com\",\r\n    \"image\":\"imageLink\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/auth/login_with_oauth",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"login_with_oauth"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"token\":\"eyJhbGciOiJSUzI1NiIsImtpZCI6IjJkN2VkMzM4YzBmMTQ1N2IyMTRhMjc0YjVlMGU2NjdiNDRhNDJkZGUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI5MDEzMDcyNjEwMS1nYWVibGw5Y3Z2NWh0Z2g4cWJlbzhqZTZvOGtsNGxrYS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImF1ZCI6IjkwMTMwNzI2MTAxLWdhZWJsbDljdnY1aHRnaDhxYmVvOGplNm84a2w0bGthLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTEwMDcxOTk1NDY1MzEyMjY5OTY1IiwiZW1haWwiOiJxYWdwdDVAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc1Njk3ODczNiwibmFtZSI6IlF1YW50dW0gQWxsaWFuY2UgR1BUIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0phaThYN3otamotQUZGRVRxT1JwTWFvYnQxZWNqY1RQd1VpS0M4a1Z2d3hpaWozZU09czk2LWMiLCJnaXZlbl9uYW1lIjoiUXVhbnR1bSBBbGxpYW5jZSBHUFQiLCJpYXQiOjE3NTY5NzkwMzYsImV4cCI6MTc1Njk4MjYzNiwianRpIjoiN2Y0YmE3M2ZkODM0ZmFhOTA4ODc2MjA2NzhmYjk1ZjcyOWZkMDJlZiJ9.N8Qx0dpgHYdURAD7G1hhfZr1gzX4mbp-73g9isxwQgNaKsMclgwDJeM1vySoWopWuw8x2wgPi-gUzVymo2kENa7Cx_Z-8DB16NqhI1Yg3BZfSLlohEtSREbvrGVOC1fdNoLwZqxt9s_7mtSB_xjQPRDoYXLPe8JGmPAkCYUAqQOYEQVzG3SBquXcxbTqjZIor7cNcyy1bE0Nfs8VbvXavhCc4UyaBMuwZXMKPCdA_cYKfljLSn18z08bGlugHZgt0SeCKeb3r_PRAIjdNlwUQQo1dRdlNMigMTmbtJgw26GsLpJ1zQ0PNTVTV_EM958JUJ63yCvYrQJehmJDRfQt8w\",\r\n    \"provider\":\"google\",\r\n    \"name\":\"Google\",\r\n    \"email\":\"google@gmail.com\",\r\n    \"image\":\"imageLink\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/{{version}}/auth/login_with_oauth",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"{{version}}",
+										"auth",
+										"login_with_oauth"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 11:51:17 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"272-kfxwnj7Mw/uN9FaHlwY0DPnWM30\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=DesnGtwJttLPyfBqzHdyZPszms9AFNrireQbyjUTBs%2B%2FfCRwa8qEnoktulWkclWwWOG35QQC4RvHMrS%2FL27L%2F%2BCc%2BAh6ivEJ9HB%2B%2FlyU\"}]}"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "996275c9edc48620-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"User logged in successfully\",\n    \"data\": {\n        \"_id\": \"6901ff7ae1ed6677be0a009e\",\n        \"name\": \"Google\",\n        \"email\": \"google@gmail.com\",\n        \"role\": \"user\",\n        \"image\": \"imageLink\"\n    },\n    \"tokens\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZmY3YWUxZWQ2Njc3YmUwYTAwOWUiLCJpYXQiOjE3NjE3Mzg2NzMsImV4cCI6MzUyMzQ3Nzk0NiwidHlwZSI6ImFjY2VzcyJ9.rK7nvYlJ0skpJzjRxhiiPaAE4P4qmLlP1CJqce2W4ZE\",\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZmY3YWUxZWQ2Njc3YmUwYTAwOWUiLCJpYXQiOjE3NjE3Mzg2NzMsImV4cCI6MzUyNjA2OTM0NiwidHlwZSI6InJlZnJlc2gifQ.ogUEsixRTd6dbErL3zuZKXjmyQ8qyKpcYoHMNvCHdPA\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "OTP Verification",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"user@gmail.com\",\r\n    \"oneTimeCode\":\"402079\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/auth/verify_otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"verify_otp"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"dipudebnath966@gmail.com\",\r\n    \"oneTimeCode\":\"100365\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/verify_otp",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"verify_otp"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Content-Security-Policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "Cross-Origin-Opener-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Cross-Origin-Resource-Policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "Origin-Agent-Cluster",
+									"value": "?1"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-DNS-Prefetch-Control",
+									"value": "off"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "89"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"59-5w6D9QzzBAwKCkXzuzb8HL1xVGo\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Sep 2025 10:17:28 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"oneTimeCode verified successfully\",\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"email\":\"user@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/auth/forgot_password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"forgot_password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n     \"email\":\"user@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/{{version}}/auth/forgot_password",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"{{version}}",
+										"auth",
+										"forgot_password"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 10:25:46 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"5d-CBzD5XqwGGIJu0hU1S9JvDSjuvg\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=mdGs0HQoHiNf3D7o%2FCMNkAovjjYhS6f8fDh9fTlBudCE4EnqxW5kj3D3EJEXt4DciDt63ScwO%2BaNIc4j056HV5lilRUicziJ3XyHY44u\"}]}"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9961f886dc01e893-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"OTP sent to email\",\n    \"data\": {\n        \"oneTimeCode\": 658710\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"user@gmail.com\",\r\n    \"password\":\"1qazxsw2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/auth/reset_password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"reset_password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"user@gmail.com\",\r\n    \"password\":\"1qazxsw2\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/{{version}}/auth/reset_password",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"{{version}}",
+										"auth",
+										"reset_password"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 10:29:23 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"53-Rc9IHwK1KuRIY7BZteuLI30nx3A\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=3euAuGWYGW1gsW50v4AHPUyxWyJs1KnJiJhMBIPUWfzhmp%2BF%2ByR9Hq%2Fo4wHFjL2tBaANQjMqzbhsVxJoODpqftcdSRlLkb22X%2BgLFiMI\"}]}"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9961fdd47885fc24-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"Password reset successfully\",\n    \"data\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"oldPassword\":\"1qazxsw2\",\r\n    // \"newPassword\":\"2wsxzaq1\"\r\n\r\n      \"newPassword\":\"1qazxsw2\",\r\n    \"oldPassword\":\"2wsxzaq1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/auth/update_password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"update_password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    // \"oldPassword\":\"1qazxsw2\",\r\n    // \"newPassword\":\"2wsxzaq1\"\r\n\r\n      \"newPassword\":\"1qazxsw2\",\r\n    \"oldPassword\":\"2wsxzaq1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/{{version}}/auth/update_password",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"{{version}}",
+										"auth",
+										"update_password"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 10:54:17 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"b5-xr88nHpwEtyOjLR0Sr1oJO53udE\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=VBtTfIozljCOQchAnp%2FRBAMCxJft5Dlt1Vj1LWrH74GZ8QE1185R3bbbx9TDzudeGVrq%2FoE%2BUePQYxWay0C1sl3Aq1gOJOzq%2BHjNiBdg\"}]}"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9962224b0d37dce8-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"Password changed successfully\",\n    \"data\": {\n        \"_id\": \"6901e29416cfddaafb55041d\",\n        \"email\": \"user@gmail.com\",\n        \"updatedAt\": \"2025-10-29T10:54:13.048Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZTI5NDE2Y2ZkZGFhZmI1NTA0MWQiLCJpYXQiOjE3NjE3MzYwNjcsImV4cCI6MzUyNjA2NDEzNCwidHlwZSI6InJlZnJlc2gifQ.5dud459n_e3ay2Pg9SeKi_CB3Bgsr6nIRW1HBIXOHGY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refresh_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZTI5NDE2Y2ZkZGFhZmI1NTA0MWQiLCJpYXQiOjE3NjE3MzYwNjcsImV4cCI6MzUyNjA2NDEzNCwidHlwZSI6InJlZnJlc2gifQ.5dud459n_e3ay2Pg9SeKi_CB3Bgsr6nIRW1HBIXOHGY\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/{{version}}/auth/logout",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"{{version}}",
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 11:11:07 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"56-vHLkey19TJ2ZvYAra9UCi6whN8Q\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=%2FZWY2cKbwJBGipDzV6aKaTer7k5CeGi4ySZzqZr1rw1xy2KqXaKN3eawJmK7z46HlkDmstIcVDJ94dAwziw%2FtQniZX2oDADZzLC5Kmhd\"}]}"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "99623af56eee812c-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"User logged out successfully\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Refresh User Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZTI5NDE2Y2ZkZGFhZmI1NTA0MWQiLCJpYXQiOjE3NjE3MzYwNjcsImV4cCI6MzUyNjA2NDEzNCwidHlwZSI6InJlZnJlc2gifQ.5dud459n_e3ay2Pg9SeKi_CB3Bgsr6nIRW1HBIXOHGY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/refresh_token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"refresh_token"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refresh_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZTI5NDE2Y2ZkZGFhZmI1NTA0MWQiLCJpYXQiOjE3NjE3MzYwNjcsImV4cCI6MzUyNjA2NDEzNCwidHlwZSI6InJlZnJlc2gifQ.5dud459n_e3ay2Pg9SeKi_CB3Bgsr6nIRW1HBIXOHGY\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/auth/refresh_token",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"refresh_token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 11:22:05 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"20d-XdvNOCDanKNFwWZpRPkmbWiYuys\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=5VsOOJPUiTwh5bHqtTT7Vw6KckCfB3ntCHFvOMcykwfLAXcpemLapUY5DrFLs%2FqwLN79354pJ3UuoO0yx5TS93daJco56Iz6m5YbkjUN\"}]}"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "99624b03ff47b5cb-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"User token refreshed successfully\",\n    \"data\": null,\n    \"tokens\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZTI5NDE2Y2ZkZGFhZmI1NTA0MWQiLCJpYXQiOjE3NjE3MzY5MjEsImV4cCI6MzUyMzQ3NDQ0MiwidHlwZSI6ImFjY2VzcyJ9.-uGYoMVAXlGgfUC0pB1HNFCwNrluptGup5zff3z0NgY\",\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTAxZTI5NDE2Y2ZkZGFhZmI1NTA0MWQiLCJpYXQiOjE3NjE3MzY5MjEsImV4cCI6MzUyNjA2NTg0MiwidHlwZSI6InJlZnJlc2gifQ.yHAy72xJ8gyx_uewrpSTIb2MsTDeuKK6tSKVi890fM0\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "profile",
+			"item": [
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{userAccessToken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Dipu Debnath/Downloads/icon.png",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Updated Name"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/user/update-profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"user",
+								"update-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "self profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/user/self-profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"user",
+								"self-profile"
+							],
+							"query": [
+								{
+									"key": "select",
+									"value": "name image role phone email location",
+									"description": "name image role phone email location",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/{{version}}/user/self-profile",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"{{version}}",
+										"user",
+										"self-profile"
+									],
+									"query": [
+										{
+											"key": "select",
+											"value": "name image role phone email location",
+											"description": "name image role phone email location",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 11:56:43 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "content-security-policy",
+									"value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+								},
+								{
+									"key": "cross-origin-opener-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "cross-origin-resource-policy",
+									"value": "same-origin"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"1cb-5yw+SIr7BecS5zdtxEmYeLPuEug\""
+								},
+								{
+									"key": "origin-agent-cluster",
+									"value": "?1"
+								},
+								{
+									"key": "referrer-policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "strict-transport-security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "vary",
+									"value": "Origin, Accept-Encoding"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-dns-prefetch-control",
+									"value": "off"
+								},
+								{
+									"key": "x-download-options",
+									"value": "noopen"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "x-permitted-cross-domain-policies",
+									"value": "none"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=J%2BGvHuPcc9I8LySGhkjgX3ZLzJLjEL9RVmhE%2Bdoj94pQQTmhP5Ah6%2BPx2LrBX185MKh0SESmh5Nxtg6eG0YfSPS%2BXLUnn1GCx8lDNy6A\"}]}"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "99627dc3fb4c1645-CGP"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"statusCode\": 200,\n    \"message\": \"User retrieved successfully\",\n    \"data\": {\n        \"_id\": \"6901e29416cfddaafb55041d\",\n        \"name\": \"User\",\n        \"email\": \"user@gmail.com\",\n        \"role\": \"user\",\n        \"image\": null,\n        \"location\": \"Banani, Dhaka, Bangladesh\",\n        \"dateOfBirth\": \"2000-01-01T00:00:00.000Z\",\n        \"phone\": null,\n        \"interests\": [],\n        \"isEmailVerified\": true,\n        \"oneTimeCode\": null,\n        \"isResetPassword\": false,\n        \"isDeleted\": false,\n        \"createdAt\": \"2025-10-29T09:47:00.285Z\",\n        \"updatedAt\": \"2025-10-29T10:54:13.048Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Test Server",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/test",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		},
+		{
+			"key": "version",
+			"value": ""
+		}
+	]
+}
