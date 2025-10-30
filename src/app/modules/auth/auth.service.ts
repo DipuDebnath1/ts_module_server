@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import AppError from '../../ErrorHandler/AppError';
-import { TUser } from '../user/user.interface';
-import { UserServices } from '../user';
+import { TUser, User } from '../user';
 import generateOtp from '../../utils/genarateOtp';
 import { sendOtpVerificationMail } from '../../../config/mailService/sendOtp';
+import BaseService from '../../../service/DBService';
 // import { OAuth2Client } from 'google-auth-library';
 // import config from '../../../config';
+
+const UserService = new BaseService<TUser>(User);
 
 // Create User in Database
 const signUpUser = async (userData: TUser) => {
   const code = generateOtp();
-  const res = await UserServices.createUser({ ...userData, oneTimeCode: code });
+  userData.oneTimeCode = Number(code);
+  const res = await UserService.create(userData);
   sendOtpVerificationMail(res.email, code);
   return res;
 };
@@ -21,10 +24,10 @@ const loginUser = async (loginData: { email: string; password: string }) => {
   const { email, password } = loginData;
 
   // Find user by email
-  const user = await UserServices.getUserByEmail(
-    email,
-    'name email image role password isDeleted isEmailVerified',
-  );
+  const user = await UserService.findOne({
+    filters: { email },
+    select: 'name email image role password isDeleted isEmailVerified',
+  });
 
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
 
@@ -43,11 +46,14 @@ const loginUser = async (loginData: { email: string; password: string }) => {
 
 //forget password
 const forgotPassword = async (email: string) => {
-  const user = await UserServices.getUserByEmail(email);
+  const user = await UserService.findOne({
+    filters: { email },
+    select: 'email isResetPassword oneTimeCode',
+  });
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
 
   const code = generateOtp();
-  user.oneTimeCode = code;
+  user.oneTimeCode = Number(code);
   user.isResetPassword = true;
   await user.save();
 
@@ -57,7 +63,10 @@ const forgotPassword = async (email: string) => {
 
 // reset password
 const resetPassword = async (email: string, newPassword: string) => {
-  const user = await UserServices.getUserByEmail(email);
+  const user = await UserService.findOne({
+    filters: { email },
+    select: 'email isResetPassword password',
+  });
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
   if (!user.isResetPassword)
     throw new AppError(
@@ -77,7 +86,10 @@ const updatePassword = async (
   oldPassword: string,
   newPassword: string,
 ) => {
-  const user = await UserServices.getUserByEmail(email, 'email password');
+  const user = await UserService.findOne({
+    filters: { email },
+    select: 'email password',
+  });
 
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
 
@@ -93,9 +105,12 @@ const updatePassword = async (
 
 //  verify OTP
 const verifyOtp = async (email: string, otp: string) => {
-  const user = await UserServices.getUserByEmail(email);
+  const user = await UserService.findOne({
+    filters: { email },
+    select: 'email oneTimeCode isEmailVerified',
+  });
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found !');
-  if (user.oneTimeCode !== otp)
+  if (user.oneTimeCode !== Number(otp))
     throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid OTP !');
   user.isEmailVerified = true;
   user.oneTimeCode = null;
@@ -134,8 +149,11 @@ const googleLogin = async (
   };
 
   let user;
-  user = await UserServices.getUserByEmail(data.email, 'name email image role');
-  if (!user) user = await UserServices.createUser(data);
+  user = await UserService.findOne({
+    filters: { email: data.email },
+    select: 'name email image role',
+  });
+  if (!user) user = await UserService.create(data);
 
   return user;
 };

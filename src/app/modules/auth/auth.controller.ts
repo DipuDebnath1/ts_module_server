@@ -11,20 +11,32 @@ import {
   invalidateUserAuthToken,
   refreshUserAuthToken,
 } from '../tokens/token.service';
-import { TUser, UserServices } from '../user';
+import { TUser, User, UserServices } from '../user';
 import { AuthServices } from './auth.service';
 import { addUrlToFileObject } from '../../utils/urlAddInUploadedImage';
+import BaseService from '../../../service/DBService';
+import generateOtp from '../../utils/genarateOtp';
+import { sendOtpVerificationMail } from '../../../config/mailService/sendOtp';
+
+const UserService = new BaseService<TUser>(User);
 
 // Create User
 const createUser: RequestHandler = catchAsync(async (req, res, next) => {
   // Handle file upload if present
   const userData: TUser = req.body;
+  const DateTimeFormat = new Date(req.body.dateOfBirth);
+  const date = DateTimeFormat.getTime();
+  if (isNaN(date))
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Invalid date format for dateOfBirth',
+    );
 
   if (req.file) userData.image = addUrlToFileObject(req.file).url; // Store the uploaded file name
 
   // const result = await UserServices.createUserIntoDB(userData);
   const { email } = req.body;
-  const isUser = await UserServices.getUserByEmail(email);
+  const isUser = await UserService.findOne({ filters: { email } });
   let result;
 
   if (isUser) {
@@ -33,13 +45,20 @@ const createUser: RequestHandler = catchAsync(async (req, res, next) => {
     } else if (!isUser.isEmailVerified) {
       result = await UserServices.isUpdateUser(isUser.id, { ...req.body });
     }
+
+    // User already not exists create new user
   } else {
-    result = await AuthServices.signUpUser(userData);
+    const code = generateOtp();
+    userData.oneTimeCode = Number(code);
+    const result = await UserService.create(userData);
+    sendOtpVerificationMail(result.email, code);
+    // return res;
   }
 
+  // send response
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
-    message: 'User registered successfully',
+    message: 'please verify OTP sent to email',
     success: true,
     data:
       config.node === 'production'
@@ -53,7 +72,7 @@ const LoginUser: RequestHandler = catchAsync(async (req, res, next) => {
   // Handle profile image update during login if provided
   const loginData = req.body;
 
-  const data = await AuthServices.loginUser(loginData);
+  const data: any = await AuthServices.loginUser(loginData);
 
   const tokens = await generateAuthTokens(data._id.toString());
 
@@ -88,7 +107,7 @@ const LoginUser: RequestHandler = catchAsync(async (req, res, next) => {
 const LoginAdmin: RequestHandler = catchAsync(async (req, res, next) => {
   const loginData = req.body;
 
-  const data = await AuthServices.loginUser(loginData);
+  const data: any = await AuthServices.loginUser(loginData);
 
   if (data.role !== 'admin' && data.role !== 'superAdmin')
     throw new AppError(httpStatus.UNAUTHORIZED, 'wrong credentials');
@@ -168,6 +187,7 @@ const ResetPassword: RequestHandler = catchAsync(async (req, res, next) => {
 const UpdatePassword: RequestHandler = catchAsync(async (req, res, next) => {
   const { user }: any = req;
   const { oldPassword, newPassword } = req.body;
+
   const result = await AuthServices.updatePassword(
     user.email,
     oldPassword,

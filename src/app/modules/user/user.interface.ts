@@ -1,6 +1,8 @@
+import { Document } from 'mongoose';
+
 export type TRoles = ['user', 'admin', 'superAdmin'];
 
-export type TUser = {
+export interface TUser extends Document {
   name: string;
   email: string;
   isEmailVerified?: boolean;
@@ -10,7 +12,7 @@ export type TUser = {
   image?: string;
   role?: 'user' | 'admin' | 'superAdmin';
   isPasswordMatch(password: string): Promise<boolean>;
-  oneTimeCode?: string | null;
+  oneTimeCode?: number | null;
   isDeleted?: boolean;
   isResetPassword?: boolean;
-};
+}

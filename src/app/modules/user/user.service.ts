@@ -5,26 +5,16 @@ import { TUser } from './user.interface';
 import { User } from './user.model';
 import { sendOtpVerificationMail } from '../../../config/mailService/sendOtp';
 import generateOtp from '../../utils/genarateOtp';
+import BaseService from '../../../service/DBService';
 
+// const UserService = new BaseService<TUser>(User);
+
+const UserService = new BaseService<TUser>(User);
 // **********USER SERVICES**********
-// create User
-const createUser = async (payload: TUser) => {
-  return await User.create(payload);
-};
-
-// Find Single User
-const getUserById = async (id: string) => {
-  return await User.findById(id);
-};
-
-const getUserByEmail = async (email: string, selectFields?: string | '') => {
-  selectFields = selectFields || '';
-  return await User.findOne({ email }).select(selectFields);
-};
 
 // Update User
 const isUpdateUser = async (userId: string, updateBody: Partial<TUser>) => {
-  const user = await getUserById(userId);
+  const user = await UserService.findById(userId);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -51,15 +41,9 @@ const updateUserProfile = async (
   userId: string,
   updateData: Partial<TUser>,
 ) => {
-  // Remove sensitive fields that shouldn't be updated directly
   const { password, role, isDeleted, ...safeUpdateData } = updateData;
 
-  // Handle password update separately if provided
-
-  const updatedUser = await User.findByIdAndUpdate(userId, safeUpdateData, {
-    new: true,
-    runValidators: true,
-  });
+  const updatedUser = await UserService.updateById(userId, safeUpdateData);
 
   if (!updatedUser) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
@@ -69,9 +53,6 @@ const updateUserProfile = async (
 };
 
 export const UserServices = {
-  createUser,
-  getUserByEmail,
   isUpdateUser,
-  getUserById,
   updateUserProfile,
 };

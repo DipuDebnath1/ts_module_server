@@ -6,8 +6,13 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
 import { addUrlToFileObject } from '../../utils/urlAddInUploadedImage';
+import { User } from './user.model';
+import { TUser } from './user.interface';
+import BaseService from '../../../service/DBService';
 
 // *************USER CONTROLLERS*********
+
+const UserService = new BaseService<TUser>(User);
 
 // Find Single User
 const FindSingleUser: RequestHandler = catchAsync(
@@ -18,7 +23,7 @@ const FindSingleUser: RequestHandler = catchAsync(
       throw new AppError(httpStatus.BAD_REQUEST, 'User ID is required');
     }
 
-    const data = await UserServices.getUserById(id);
+    const data = await UserService.findById(id);
 
     if (!data) {
       throw new AppError(httpStatus.NOT_FOUND, 'User not found');
@@ -59,7 +64,7 @@ const GetSelfProfile: RequestHandler = catchAsync(
     const { user }: any = req;
     const { _id } = user;
 
-    const data = await UserServices.getUserById(_id);
+    const data = await UserService.findById(_id);
 
     if (!data) {
       throw new AppError(httpStatus.NOT_FOUND, 'User not found');

@@ -4,6 +4,9 @@ import config from '../../../config';
 import moment from 'moment';
 import Token from './token.model';
 import { tokenTypes } from './token.type';
+import BaseService from '../../../service/DBService';
+
+const TokenService = new BaseService<any>(Token);
 
 interface ITokenPayload {
   sub: string; // userId
@@ -35,7 +38,7 @@ const saveToken = async (
   type: string,
   blacklisted: boolean = false,
 ) => {
-  const tokenDoc = await Token.create({
+  const tokenDoc = await TokenService.create({
     token,
     user: userId,
     expires: expires.toDate(),
@@ -51,11 +54,13 @@ const verifyToken = async (token: string, type: string): Promise<any> => {
     token,
     config.tokens.accessTokenSecret,
   ) as ITokenPayload;
-  const tokenDoc = await Token.findOne({
-    token,
-    type,
-    user: payload.sub, // 'sub' refers to the userId from the token payload
-    blacklisted: false,
+  const tokenDoc = await TokenService.findOne({
+    filters: {
+      token,
+      type,
+      user: payload.sub, // 'sub' refers to the userId from the token payload
+      blacklisted: false,
+    },
   });
 
   if (!tokenDoc) {
@@ -100,7 +105,7 @@ const generateAuthTokens = async (userId: string) => {
 };
 
 const invalidateUserAuthToken = async (token: string) => {
-  await Token.updateMany({ token }, { blacklisted: true });
+  await TokenService.updateMany({ token }, { blacklisted: true });
 };
 
 // refresh user token
