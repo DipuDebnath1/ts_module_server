@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Request } from 'express';
+import httpStatus from 'http-status';
 import multer, { StorageEngine } from 'multer';
 import path from 'path';
-import { Request } from 'express';
-import AppError from '../app/ErrorHandler/AppError';
-import httpStatus from 'http-status';
+import AppError from '../../app/ErrorHandler/AppError';
 
 // Define the type for the UPLOADS_FOLDER parameter
+
+// const localFileUploadDestination = `./public`;
+const localFileUploadDestination = `./public`;
 
 export default function (UPLOADS_FOLDER: string): multer.Multer {
   // Define storage configuration for multer using diskStorage
@@ -15,7 +18,7 @@ export default function (UPLOADS_FOLDER: string): multer.Multer {
       file: Express.Multer.File,
       cb: (error: Error | null, destination: string) => void,
     ) => {
-      cb(null, UPLOADS_FOLDER); // Use the provided destination folder
+      cb(null, `${localFileUploadDestination}/${UPLOADS_FOLDER}`);
     },
     filename: (
       req: Request,

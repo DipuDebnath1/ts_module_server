@@ -13,10 +13,10 @@ import {
 } from '../tokens/token.service';
 import { TUser, User, UserServices } from '../user';
 import { AuthServices } from './auth.service';
-import { addUrlToFileObject } from '../../utils/urlAddInUploadedImage';
 import BaseService from '../../../service/DBService';
 import generateOtp from '../../utils/genarateOtp';
 import { sendOtpVerificationMail } from '../../../config/mailService/sendOtp';
+import { ImageUrl } from '../../utils/urlAddInUploadedImage';
 
 const UserService = new BaseService<TUser>(User);
 
@@ -32,7 +32,7 @@ const createUser: RequestHandler = catchAsync(async (req, res, next) => {
       'Invalid date format for dateOfBirth',
     );
 
-  if (req.file) userData.image = addUrlToFileObject(req.file).url; // Store the uploaded file name
+  if (req.file) userData.image = ImageUrl(req.file); // Store the uploaded file name
 
   // const result = await UserServices.createUserIntoDB(userData);
   const { email } = req.body;

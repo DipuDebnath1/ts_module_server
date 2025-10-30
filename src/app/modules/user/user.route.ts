@@ -2,14 +2,13 @@ import express from 'express';
 import { UserController } from './user.controller';
 import validationRequest from '../../utils/validationRequest';
 import userValidation from './user.validation';
-import fileUploader from '../../../middleware/fileUpload';
 import auth from '../../../middleware/auth';
+import fileUploader from '../../../middleware/fileUpload/fileUploader';
 
 const router = express.Router();
 
 // File upload configuration
-const UPLOADS_FOLDER = './public/users';
-const fileUpload = fileUploader(UPLOADS_FOLDER);
+const fileUpload = fileUploader('users');
 
 // **********USER ROUTES**********
 

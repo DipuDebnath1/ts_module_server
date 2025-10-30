@@ -31,6 +31,12 @@ export default {
     secretAccessKey: process.env.AWS_YOUR_SECRET_KEY,
   },
 
+  // File upload settings
+  file: {
+    UploaderServices: process.env.FILE_UPLOADER || 'LOCAL',
+    imageFileSizeLimit: Number(process.env.IMAGE_FILE_SIZE_LIMIT) || 5, // in MB
+  },
+
   // Token settings
   tokens: {
     accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || '',

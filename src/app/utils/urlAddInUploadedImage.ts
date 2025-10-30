@@ -1,15 +1,5 @@
-// Define a type for the file object
-interface FileObject {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  destination: string;
-  filename: string;
-  path: string;
-  size: number;
-  url?: string; // Optional field for URL
-}
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import config from '../../config';
 
 // Function to generate the URL
 function generateImageUrl(destination: string, filename: string): string {
@@ -20,9 +10,14 @@ function generateImageUrl(destination: string, filename: string): string {
 }
 
 // Function to add the URL to the file object
-export function addUrlToFileObject(fileObj: FileObject): FileObject {
-  // Add the generated URL to the file object
-  fileObj.url = generateImageUrl(fileObj.destination, fileObj.filename);
+export function ImageUrl(fileObj: any): string {
+  if (!fileObj) return '';
 
-  return fileObj;
+  // Handle AWS S3 case
+  if (config.file.UploaderServices === 'AWS_S3') return fileObj.location || '';
+
+  // Handle Local Storage case
+  if (config.file.UploaderServices === 'LOCAL')
+    return generateImageUrl(fileObj.destination, fileObj.filename);
+  return fileObj.url || '';
 }

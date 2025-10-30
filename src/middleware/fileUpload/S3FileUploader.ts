@@ -2,12 +2,12 @@
 
 // module.exports = s3Uploader;
 import { Request } from 'express';
+import httpStatus from 'http-status';
 import multer, { StorageEngine } from 'multer';
 import multerS3 from 'multer-s3';
 import path from 'path';
-import { s3Client } from '../config/aws.config'; // Import the S3 client instance
-import AppError from '../app/ErrorHandler/AppError';
-import httpStatus from 'http-status';
+import AppError from '../../app/ErrorHandler/AppError';
+import { s3Client } from '../../config/aws.config'; // Import the S3 client instance
 
 // Define the accepted file types for fileFilter
 // type FileFilterCallback = (error: Error | null, acceptFile: boolean) => void;

@@ -5,10 +5,10 @@ import AppError from '../../ErrorHandler/AppError';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
-import { addUrlToFileObject } from '../../utils/urlAddInUploadedImage';
 import { User } from './user.model';
 import { TUser } from './user.interface';
 import BaseService from '../../../service/DBService';
+import { ImageUrl } from '../../utils/urlAddInUploadedImage';
 
 // *************USER CONTROLLERS*********
 
@@ -45,7 +45,7 @@ const UpdateUserProfile: RequestHandler = catchAsync(
     const { _id } = user;
 
     // Handle file upload if present
-    if (req.file) req.body.image = addUrlToFileObject(req.file).url;
+    if (req.file) req.body.image = ImageUrl(req.file);
 
     const data = await UserServices.updateUserProfile(_id, req.body);
 
