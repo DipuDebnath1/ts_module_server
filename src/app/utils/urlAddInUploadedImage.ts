@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import config from '../../config';
 
-// Function to generate the URL
+import path from 'path';
+
 function generateImageUrl(destination: string, filename: string): string {
-  // Extract the folder path after 'public' to create the URL
-  const folderPath = destination.replace('./public/', '');
-  // Construct the URL
-  return folderPath + '/' + filename;
+  // Normalize slashes (Windows uses \, Linux uses /)
+  const normalizedDest = destination.replace(/\\/g, '/');
+
+  // Remove any leading './' or 'public/' parts
+  const folderPath = normalizedDest
+    .replace(/^\.?\/*public\/*/, '') // remove ./public/ or public/
+    .replace(/^\/+/, ''); // remove leading slashes if any
+
+  // Construct clean relative URL
+  const url = path.posix.join(folderPath, filename);
+
+  return url;
 }
 
 // Function to add the URL to the file object
