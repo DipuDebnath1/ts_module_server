@@ -1,9 +1,11 @@
+import fs from 'fs';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request } from 'express';
 import httpStatus from 'http-status';
 import multer, { StorageEngine } from 'multer';
 import path from 'path';
 import AppError from '../../app/ErrorHandler/AppError';
+import config from '../../config';
 
 // Define the type for the UPLOADS_FOLDER parameter
 
@@ -18,8 +20,16 @@ export default function (UPLOADS_FOLDER: string): multer.Multer {
       file: Express.Multer.File,
       cb: (error: Error | null, destination: string) => void,
     ) => {
-      cb(null, `${localFileUploadDestination}/${UPLOADS_FOLDER}`);
+      const fullPath = path.join(localFileUploadDestination, UPLOADS_FOLDER);
+
+      // ✅ Check if folder exists — if not, create it (including nested directories)
+      if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath, { recursive: true });
+      }
+
+      cb(null, fullPath);
     },
+
     filename: (
       req: Request,
       file: Express.Multer.File,
@@ -43,7 +53,7 @@ export default function (UPLOADS_FOLDER: string): multer.Multer {
   const upload = multer({
     storage,
     limits: {
-      fileSize: 1024 * 1024 * 20, // Max allowed file size: 20MB
+      fileSize: Number(config.file.imageFileSizeLimit) * 1024 * 1024, // Max allowed file size: 20MB
     },
     fileFilter: (req: Request, file: Express.Multer.File, cb: any) => {
       if (
