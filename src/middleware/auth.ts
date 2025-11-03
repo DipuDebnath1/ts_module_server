@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import AppError from '../app/ErrorHandler/AppError';
 import { User } from '../app/modules/user/user.model';
 import { accessTokenDecoded } from '../app/modules/tokens/tokenDecoded';
+import roles from '../app/utils/roles';
 
 // Authorization middleware
 const auth =
@@ -46,8 +47,13 @@ const auth =
       }
 
       // Step 4: Get the user's roles from the `roles.ts` file
-      // const userRoles = roleRights.get(user.role);
-      const userRoles = ['user', 'common'];
+      if (!user.role) {
+        return next(
+          new AppError(httpStatus.FORBIDDEN, 'User role does not exist'),
+        );
+      }
+      const userRoles = roles.roleRights.get(user.role);
+      // const userRoles = roles.roles;
       if (!userRoles) {
         return next(
           new AppError(httpStatus.FORBIDDEN, 'User role does not exist'),
