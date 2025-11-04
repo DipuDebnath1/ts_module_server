@@ -7,6 +7,7 @@ import {
   FilterQuery,
   UpdateQuery,
   ClientSession,
+  UpdateResult,
 } from 'mongoose';
 import {
   TPaginationResult,
@@ -91,10 +92,11 @@ export default class BaseService<T extends Document> {
     filters: FilterQuery<T>,
     updateData: UpdateQuery<T>,
     session?: ClientSession,
-  ): Promise<T | null> {
-    return await this.model
-      .findOneAndUpdate(filters, updateData, { new: true, session })
+  ): Promise<UpdateResult | null> {
+    const res = await this.model
+      .updateOne(filters, updateData, { session })
       .exec();
+    return res;
   }
 
   /**
@@ -104,13 +106,7 @@ export default class BaseService<T extends Document> {
     filters: FilterQuery<T>,
     updateData: UpdateQuery<T>,
     session?: ClientSession,
-  ): Promise<{
-    acknowledged: boolean;
-    modifiedCount: number;
-    upsertedId: any;
-    upsertedCount: number;
-    matchedCount: number;
-  }> {
+  ): Promise<UpdateResult | null> {
     return await this.model.updateMany(filters, updateData, { session }).exec();
   }
 
