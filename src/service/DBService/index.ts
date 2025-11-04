@@ -85,6 +85,21 @@ export default class BaseService<T extends Document> {
   }
 
   /**
+   * 🔹 find one and Update
+   */
+
+  async findOneAndUpdate(
+    filters: FilterQuery<T>,
+    updateData: UpdateQuery<T>,
+    session?: ClientSession,
+  ): Promise<T | null> {
+    const res = await this.model
+      .findOneAndUpdate(filters, updateData, { new: true, session })
+      .exec();
+    return res;
+  }
+
+  /**
    * 🔹 Update one by filter
    */
 
