@@ -1,6 +1,6 @@
 {
   "description": "",
-  "name": "tech-tips-and-tricks-hub-server",
+  "name": "Backend Server",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
